@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 # Import database wrapper for MySQL (only needed in container environment)
 try:
-    import database_wrapper
+    import database_wrapper  # type: ignore
 except ImportError:
     pass
 
