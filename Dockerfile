@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     python3-dev \
     default-mysql-client \
+    # Dependencies for PyMuPDF (fitz)
+    libmupdf-dev \
+    mupdf \
+    mupdf-tools \
+    libfreetype6-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -32,9 +37,6 @@ RUN echo 'import os\nimport pymysql\npymysql.install_as_MySQLdb()' > database_wr
 
 # Collect static files
 RUN python manage.py collectstatic --noinput || echo "Skipping collectstatic"
-
-# Run migrations (optional, can also be done as a deploy step)
-# RUN python manage.py migrate
 
 # Run the application
 CMD gunicorn smartexam.wsgi:application --bind 0.0.0.0:$PORT
