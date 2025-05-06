@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     default-libmysqlclient-dev \
     pkg-config \
+    gcc \
+    python3-dev \
+    default-mysql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,6 +26,9 @@ RUN pip install --upgrade pip && \
 
 # Copy project files
 COPY . .
+
+# Add database configuration wrapper
+RUN echo 'import os\nimport pymysql\npymysql.install_as_MySQLdb()' > database_wrapper.py
 
 # Collect static files
 RUN python manage.py collectstatic --noinput || echo "Skipping collectstatic"

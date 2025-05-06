@@ -14,6 +14,12 @@ import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Import database wrapper for MySQL (only needed in container environment)
+try:
+    import database_wrapper
+except ImportError:
+    pass
+
 # Load environment variables
 load_dotenv()
 
