@@ -1,17 +1,10 @@
-Django>=4.2,<5.3
+Django==4.2.11
 gunicorn==21.2.0
 whitenoise==6.5.0
 python-dotenv==1.0.0
 dj-database-url==2.1.0
 django-simple-captcha==0.5.18
 Pillow==10.0.0
-reportlab==4.0.4
 psycopg2-binary==2.9.9
-# Use pdfkit instead of WeasyPrint for PDF generation (less dependencies)
-pdfkit==1.0.0
-# MySQL client with explicit version that works well in container environments
-<<<<<<< HEAD
-mysqlclient==2.1.1
-=======
-mysqlclient==2.1.1
->>>>>>> f2668a71f593b5f21cee92b3dedabcd9457538d1
+pymysql==1.1.0
+reportlab==4.0.4
