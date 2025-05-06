@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }} - Exam Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+        .meta-info {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .difficulty {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .easy {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .medium {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .hard {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .question-card {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            page-break-inside: avoid;
+        }
+        .question-header {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            margin-bottom: 20px;
+        }
+        .answer-label {
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .answer-text {
+            margin-bottom: 15px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ subject }}</h1>
+        <div class="meta-info">
+            Generated on {{ date|date:"F j, Y" }} 
+            <span class="difficulty {{ difficulty }}">{{ difficulty|title }}</span>
+        </div>
+    </div>
+    
+    {% for qa in questions_answers %}
+    <div class="question-card">
+        <div class="question-header">Question {{ qa.question_num }}</div>
+        <div class="question-text">{{ qa.question_text|linebreaksbr }}</div>
+        <div class="answer-label">Answer:</div>
+        <div class="answer-text">{{ qa.answer_text|linebreaksbr }}</div>
+    </div>
+    {% endfor %}
+    
+    <div class="footer">
+        <p>Generated with SmartExam - AI-Powered Exam Preparation</p>
+    </div>
+</body>
+</html>

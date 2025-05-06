@@ -1,0 +1,1 @@
+web: gunicorn smartexam.wsgi --log-file -

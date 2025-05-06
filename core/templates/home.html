@@ -1,0 +1,712 @@
+{% extends 'base.html' %}
+
+{% block title %}SmartExam - AI-Powered Exam Preparation{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium gradient animations */
+    .hero-gradient {
+        background-size: 400% 400%;
+        animation: gradient-shift 15s ease infinite;
+    }
+    
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Floating animation for elements */
+    .float-animation {
+        animation: floating 6s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Glow effect for premium elements */
+    .premium-glow {
+        box-shadow: 0 0 15px rgba(14, 165, 233, 0.15);
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .premium-glow:hover {
+        box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+    }
+    
+    /* Highlight animation for important content */
+    .highlight-pulse {
+        position: relative;
+        animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse-ring {
+        0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.3); }
+        70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+    }
+    
+    /* Elegant transition for dropzone interactions */
+    .dropzone-modern {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .dropzone-modern.active {
+        transform: scale(1.02);
+        border-color: #0ea5e9;
+    }
+    
+    /* 3D card effect */
+    .card-3d {
+        transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform-style: preserve-3d;
+    }
+    
+    .card-3d:hover {
+        transform: translateY(-6px) rotateX(2deg) rotateY(2deg);
+    }
+    
+    /* Shine effect for cards */
+    .shine-effect {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .shine-effect:after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 20%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.13);
+        transform: rotate(35deg);
+        transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        opacity: 0;
+    }
+    
+    .shine-effect:hover:after {
+        left: 130%;
+        opacity: 1;
+    }
+    
+    /* Button animations and effects */
+    .btn-premium {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-premium::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: all 0.6s ease;
+    }
+    
+    .btn-premium:hover::before {
+        left: 100%;
+    }
+    
+    /* Counter animation for testimonial numbers */
+    .counter-animate {
+        transition: all 0.4s;
+    }
+    
+    .counter-animate:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section - Enhanced with interactive particles and animations -->
+<div class="relative overflow-hidden">
+    <div id="particles-js" class="absolute inset-0 z-0 opacity-30"></div>
+    <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 dark:from-gray-800 dark:via-gray-800/90 dark:to-gray-900 pt-16 pb-20 rounded-3xl mb-16 hero-gradient relative z-10">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
+                <div class="mb-6 relative" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="absolute inset-0 bg-blue-500 rounded-full blur-3xl opacity-10 animate-pulse-slow"></div>
+                    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight relative">
+                        AI-Powered <span class="text-blue-600 dark:text-blue-400 bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-transparent">Exam Preparation</span> Made Easy
+                    </h1>
+                </div>
+                <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="300">
+                    Upload your syllabus and past papers to get AI-generated exam questions and detailed answers.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+                    <a href="#exam-form" class="btn-premium bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center premium-glow">
+                        <span>Get Started Now</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="flex items-center bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-3 px-8 rounded-lg border border-gray-300 dark:border-gray-600 transition-all duration-300 shadow-sm hover:shadow transform hover:scale-105 premium-glow">
+                        <span>View Your History</span>
+                        <i class="fas fa-history ml-2"></i>
+                    </a>
+                </div>
+                
+                <!-- Animated Stats -->
+                <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="500">
+                    <div class="text-center counter-animate">
+                        <div class="text-blue-600 dark:text-blue-400 font-bold text-3xl" id="counter1">0</div>
+                        <p class="text-gray-600 dark:text-gray-400">Happy Students</p>
+                    </div>
+                    <div class="text-center counter-animate">
+                        <div class="text-blue-600 dark:text-blue-400 font-bold text-3xl" id="counter2">0</div>
+                        <p class="text-gray-600 dark:text-gray-400">Questions Generated</p>
+                    </div>
+                    <div class="text-center counter-animate">
+                        <div class="text-blue-600 dark:text-blue-400 font-bold text-3xl" id="counter3">0</div>
+                        <p class="text-gray-600 dark:text-gray-400">Exams Improved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animated shapes for premium feel -->
+        <div class="hidden lg:block absolute top-10 left-10 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+        <div class="hidden lg:block absolute bottom-10 right-10 w-32 h-32 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        <div class="hidden lg:block absolute top-1/2 left-1/2 w-32 h-32 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+    </div>
+</div>
+
+<!-- How It Works Section - Enhanced with modern animated cards -->
+<div class="container mx-auto px-4 mb-20">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6" data-aos="fade-up">How It Works</h2>
+    <p class="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        Our platform uses advanced AI to analyze your course materials and generate personalized exam questions and answers.
+    </p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Step 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center card-3d shine-effect premium-glow" data-aos="fade-up" data-aos-delay="150">
+            <div class="bg-blue-100 dark:bg-blue-900/30 w-20 h-20 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 text-3xl font-bold mx-auto mb-6 highlight-pulse">1</div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload Your Content</h3>
+            <p class="text-gray-600 dark:text-gray-300">Upload your course syllabus and previous year question papers in PDF format.</p>
+            <div class="mt-6">
+                <i class="fas fa-file-upload text-blue-500 text-4xl float-animation"></i>
+            </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center card-3d shine-effect premium-glow" data-aos="fade-up" data-aos-delay="300">
+            <div class="bg-blue-100 dark:bg-blue-900/30 w-20 h-20 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 text-3xl font-bold mx-auto mb-6 highlight-pulse">2</div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">AI Analysis</h3>
+            <p class="text-gray-600 dark:text-gray-300">Our advanced AI analyzes your content to identify key topics and patterns in exam questions.</p>
+            <div class="mt-6">
+                <i class="fas fa-brain text-blue-500 text-4xl float-animation"></i>
+            </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center card-3d shine-effect premium-glow" data-aos="fade-up" data-aos-delay="450">
+            <div class="bg-blue-100 dark:bg-blue-900/30 w-20 h-20 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 text-3xl font-bold mx-auto mb-6 highlight-pulse">3</div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Get Results</h3>
+            <p class="text-gray-600 dark:text-gray-300">Receive AI-generated probable exam questions with comprehensive answers to boost your preparation.</p>
+            <div class="mt-6">
+                <i class="fas fa-check-circle text-blue-500 text-4xl float-animation"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form Section - Enhanced with modern interactive form -->
+<div id="exam-form" class="container mx-auto px-4 mb-20 scroll-mt-24">
+    <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden premium-glow" data-aos="fade-up">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 py-8 px-8 relative">
+            <div class="absolute top-0 left-0 w-full h-full bg-grid-white/10 opacity-20"></div>
+            <h2 class="text-2xl font-bold text-white relative z-10" data-aos="fade-right">Generate Exam Questions</h2>
+            <p class="text-blue-100 relative z-10" data-aos="fade-right" data-aos-delay="100">Upload your syllabus and past papers to get started</p>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" class="p-8" id="exam-generation-form">
+            {% csrf_token %}
+            
+            {% if error %}
+            <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 101.414 1.414L10 11.414l1.293 1.293a1 1 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">Error</h3>
+                        <div class="mt-1 text-sm text-red-700">
+                            {{ error }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="space-y-8">
+                <!-- Subject Field - Enhanced with modern input -->
+                <div data-aos="fade-up">
+                    <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject Name *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-book text-gray-400"></i>
+                        </span>
+                        <input type="text" name="subject" id="subject" required
+                               class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-300"
+                               placeholder="e.g., Data Structures, Machine Learning, Marketing Management">
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Enter the full name of your subject/course</p>
+                </div>
+
+                <!-- Enhanced Customization Options with animated inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-aos="fade-up" data-aos-delay="100">
+                    <!-- Question Count -->
+                    <div>
+                        <label for="question_count" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Number of Questions</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-list-ol text-gray-400"></i>
+                            </span>
+                            <select name="question_count" id="question_count" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-300">
+                                <option value="3">3 Questions</option>
+                                <option value="5" selected>5 Questions</option>
+                                <option value="7">7 Questions</option>
+                                <option value="10">10 Questions</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Level -->
+                    <div>
+                        <label for="difficulty" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Difficulty Level</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chart-line text-gray-400"></i>
+                            </span>
+                            <select name="difficulty" id="difficulty" 
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-300">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specific Topics with modern text area -->
+                <div data-aos="fade-up" data-aos-delay="150">
+                    <label for="specific_topics" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Specific Topics (Optional)</label>
+                    <div class="relative">
+                        <span class="absolute top-3 left-3 flex items-center pointer-events-none">
+                            <i class="fas fa-tags text-gray-400"></i>
+                        </span>
+                        <textarea name="specific_topics" id="specific_topics" rows="2"
+                                  class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all duration-300"
+                                  placeholder="Enter specific topics you want to focus on, separated by commas"></textarea>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Leave blank to cover the entire syllabus</p>
+                </div>
+                
+                <!-- Syllabus Upload - Enhanced with interactive drag & drop -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <label for="syllabus_pdf" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Course Syllabus (PDF) *</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg dropzone-modern" id="syllabus-dropzone">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                                <label for="syllabus_pdf" class="relative cursor-pointer rounded-md font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 focus-within:outline-none">
+                                    <span>Upload a file</span>
+                                    <input id="syllabus_pdf" name="syllabus_pdf" type="file" class="sr-only" accept=".pdf" required onchange="updateFileLabel(this, 'syllabus-file-name')">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PDF up to 10MB</p>
+                            <p id="syllabus-file-name" class="text-sm text-blue-600 dark:text-blue-400 mt-2 hidden"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Previous Year Papers Upload -->
+                <div data-aos="fade-up" data-aos-delay="250">
+                    <label for="pyq_pdf" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Previous Year Questions (PDF)</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg dropzone-modern" id="pyq-dropzone">
+                        <div class="space-y-1 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                                <label for="pyq_pdf" class="relative cursor-pointer rounded-md font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 focus-within:outline-none">
+                                    <span>Upload a file</span>
+                                    <input id="pyq_pdf" name="pyq_pdf" type="file" class="sr-only" accept=".pdf" onchange="updateFileLabel(this, 'pyq-file-name')">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PDF up to 10MB (optional but recommended)</p>
+                            <p id="pyq-file-name" class="text-sm text-blue-600 dark:text-blue-400 mt-2 hidden"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit button with premium animation effect -->
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <button type="submit" class="w-full flex justify-center items-center px-6 py-4 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 btn-premium">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" id="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="relative z-10">Generate Exam Questions</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Testimonials Section - Enhanced with premium card interactions -->
+<div class="container mx-auto px-4 mb-20">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6" data-aos="fade-up">What Our Users Say</h2>
+    <p class="text-center text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        Join thousands of students who achieved better results with SmartExam's personalized questions.
+    </p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all duration-500 hover:shadow-xl card-3d premium-glow" data-aos="fade-up" data-aos-delay="150">
+            <div class="text-yellow-400 flex mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                "SmartExam helped me ace my final exams. The AI-generated questions were spot on, and many appeared in my actual exam!"
+            </p>
+            <div class="flex items-center">
+                <div class="bg-blue-600 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">KSO</div>
+                <div class="ml-3">
+                    <h4 class="font-medium text-gray-900 dark:text-white">Karamveer Singh Oberoi</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Computer Science Student</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testimonial 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all duration-500 hover:shadow-xl card-3d premium-glow" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-yellow-400 flex mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                "The comprehensive answers provided by SmartExam gave me a deeper understanding of complex topics. Highly recommended!"
+            </p>
+            <div class="flex items-center">
+                <div class="bg-green-600 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">VS</div>
+                <div class="ml-3">
+                    <h4 class="font-medium text-gray-900 dark:text-white">Vedant Sirsat</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">AI & DS Student</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testimonial 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 transform transition-all duration-500 hover:shadow-xl card-3d premium-glow" data-aos="fade-up" data-aos-delay="450">
+            <div class="text-yellow-400 flex mb-4">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                "As a busy student, SmartExam saved me countless hours of preparation time while ensuring I was well-prepared for my exams."
+            </p>
+            <div class="flex items-center">
+                <div class="bg-purple-600 h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold">AA</div>
+                <div class="ml-3">
+                    <h4 class="font-medium text-gray-900 dark:text-white">Aarav Adwani</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">7th Grade Student</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium features section -->
+<div class="container mx-auto px-4 mb-20">
+    <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 dark:from-gray-800 dark:via-gray-800/90 dark:to-gray-900 rounded-3xl p-10 relative overflow-hidden" data-aos="fade-up">
+        <div class="absolute inset-0 bg-grid-white/10 opacity-20"></div>
+        
+        <div class="max-w-4xl mx-auto relative z-10">
+            <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-10">Premium Features</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Premium Feature 1 -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-md flex items-start premium-glow" data-aos="fade-right" data-aos-delay="150">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-magic text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-2">AI-Powered Question Generation</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Questions tailored to your specific course content with varying difficulty levels.</p>
+                    </div>
+                </div>
+                
+                <!-- Premium Feature 2 -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-md flex items-start premium-glow" data-aos="fade-left" data-aos-delay="200">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-history text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-2">Exam History Tracking</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Track your performance and improvement over time with detailed analytics.</p>
+                    </div>
+                </div>
+                
+                <!-- Premium Feature 3 -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-md flex items-start premium-glow" data-aos="fade-right" data-aos-delay="250">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-file-export text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-2">PDF Export</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Download your generated questions and answers as a PDF for offline study.</p>
+                    </div>
+                </div>
+                
+                <!-- Premium Feature 4 -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-md flex items-start premium-glow" data-aos="fade-left" data-aos-delay="300">
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-2">Study Groups</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Share generated questions with classmates and study together more effectively.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <a href="{% url 'pricing' %}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 btn-premium">
+                    Explore All Features
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<!-- Particles.js for interactive background -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    // Initialize particles.js for premium hero section
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": {
+                        "value": 30,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#0284c7"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                    },
+                    "opacity": {
+                        "value": 0.3,
+                        "random": true
+                    },
+                    "size": {
+                        "value": 5,
+                        "random": true
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#0284c7",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": true,
+                        "out_mode": "out"
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    }
+                },
+                "retina_detect": true
+            });
+        }
+        
+        // Animate counters
+        animateCounters();
+        
+        // Enhanced drag and drop
+        initializeDragDrop();
+    });
+    
+    // Function to show the selected file name with animation
+    function updateFileLabel(input, labelId) {
+        const fileName = input.files[0].name;
+        const label = document.getElementById(labelId);
+        label.textContent = fileName;
+        label.classList.remove('hidden');
+        
+        // Add animation
+        gsap.from(label, {
+            opacity: 0, 
+            y: 10, 
+            duration: 0.5
+        });
+    }
+    
+    // Handle form submission - show loading spinner
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('loading-spinner').classList.remove('hidden');
+        
+        // Disable submit button
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+        
+        // Add shimmer effect
+        submitBtn.classList.add('shimmer-bg');
+    });
+    
+    // Counter animation
+    function animateCounters() {
+        const counters = {
+            counter1: { end: 5000, duration: 2 },
+            counter2: { end: 2500, duration: 2.5 },
+            counter3: { end: 10000, duration: 3 }
+        };
+        
+        for (let id in counters) {
+            const el = document.getElementById(id);
+            if (el) {
+                animateValue(el, 0, counters[id].end, counters[id].duration);
+            }
+        }
+    }
+    
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1);
+            let value = Math.floor(progress * (end - start) + start);
+            obj.innerHTML = value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+    
+    // Enhanced drag and drop functionality
+    function initializeDragDrop() {
+        const dropZones = document.querySelectorAll('.dropzone-modern');
+        
+        // For each drop zone
+        dropZones.forEach(zone => {
+            const input = zone.querySelector('input[type="file"]');
+            const labelId = input.getAttribute('onchange').split(',')[1].trim().replace(')', '').replace("'", '').replace("'", '');
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop zone when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                zone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                zone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            // Handle dropped files
+            zone.addEventListener('drop', handleDrop, false);
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight() {
+                zone.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'active');
+            }
+            
+            function unhighlight() {
+                zone.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'active');
+            }
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0 && files[0].type === 'application/pdf') {
+                    input.files = files;
+                    const fileName = files[0].name;
+                    const label = document.getElementById(labelId);
+                    label.textContent = fileName;
+                    label.classList.remove('hidden');
+                    
+                    // Add a success feedback animation
+                    gsap.to(zone, {
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: '#3b82f6',
+                        duration: 0.3,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                    
+                    gsap.from(label, {
+                        opacity: 0, 
+                        y: 10, 
+                        duration: 0.5
+                    });
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
+{% endblock %}

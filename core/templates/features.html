@@ -1,0 +1,685 @@
+{% extends 'base.html' %}
+
+{% block title %}Features - SmartExam{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Existing feature card animations */
+    .feature-card {
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .feature-icon {
+        transition: all 0.5s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.8s ease forwards;
+        opacity: 0;
+    }
+    
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Sequential fade-in animations */
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+    .fade-in:nth-child(5) { animation-delay: 0.5s; }
+    .fade-in:nth-child(6) { animation-delay: 0.6s; }
+    
+    /* Animated gradient background */
+    .animated-gradient {
+        background-size: 200% 200%;
+        animation: gradientMotion 5s ease infinite;
+        background-image: linear-gradient(-45deg, #4338ca, #3b82f6, #0284c7, #2563eb);
+    }
+    
+    @keyframes gradientMotion {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* New animations for enhanced user experience */
+    
+    /* Floating animation for decorative elements */
+    .floating {
+        animation: floating 6s ease-in-out infinite;
+    }
+    
+    .floating-delayed {
+        animation: floating 7s ease-in-out 1s infinite;
+    }
+    
+    @keyframes floating {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(4deg); }
+        100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    /* Glowing effect for important elements */
+    .glow-effect {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .glow-effect::after {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: conic-gradient(
+            transparent, 
+            rgba(79, 70, 229, 0.1), 
+            transparent, 
+            transparent
+        );
+        animation: rotate 4s linear infinite;
+        z-index: 0;
+    }
+    
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Pulsing animation for attention-grabbing elements */
+    .pulse-animation {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { 
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% { 
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+    }
+    
+    /* Advanced hover effect for table rows */
+    .hover-row {
+        transition: all 0.2s ease;
+    }
+    
+    .hover-row:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    /* Path animation for feature icon borders */
+    .path-animation .feature-icon-border {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        transition: stroke-dashoffset 0.8s ease;
+    }
+    
+    .path-animation:hover .feature-icon-border {
+        stroke-dashoffset: 0;
+    }
+    
+    /* Scale animation on scroll for images */
+    .scale-in {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .scale-in.visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    /* Shine effect for CTA buttons */
+    .shine-effect {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .shine-effect::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -100%;
+        width: 50%;
+        height: 200%;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+        );
+        transform: rotate(30deg);
+        transition: all 0.5s;
+    }
+    
+    .shine-effect:hover::before {
+        left: 100%;
+        transition: all 0.5s;
+    }
+    
+    /* Feature comparison table highlight animation */
+    @keyframes highlightCell {
+        0% { background-color: transparent; }
+        50% { background-color: rgba(79, 70, 229, 0.1); }
+        100% { background-color: transparent; }
+    }
+    
+    .highlight-animation {
+        animation: highlightCell 2s ease-in-out;
+    }
+    
+    /* 3D rotation effect for feature icons on hover */
+    .feature-icon-3d {
+        transition: transform 0.5s ease;
+        transform-style: preserve-3d;
+    }
+    
+    .feature-card:hover .feature-icon-3d {
+        transform: rotateY(180deg);
+    }
+    
+    /* Typing animation for testimonial text */
+    .typing-animation {
+        border-right: 2px solid;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
+        animation: typing 3.5s steps(40, end) forwards,
+                   blink 1s step-end infinite;
+    }
+    
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+    
+    @keyframes blink {
+        from, to { border-color: transparent }
+        50% { border-color: #3b82f6; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 pt-20 pb-24 rounded-3xl mb-16 relative overflow-hidden">
+    <!-- Animated dots -->
+    <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-blue-400/10 blur-xl floating"></div>
+    <div class="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-indigo-400/10 blur-xl floating-delayed"></div>
+    <div class="absolute top-40 right-20 w-16 h-16 rounded-full bg-purple-400/10 blur-lg floating" style="animation-delay: 0.5s;"></div>
+    <div class="absolute bottom-40 left-40 w-24 h-24 rounded-full bg-pink-400/10 blur-lg floating-delayed" style="animation-delay: 1.5s;"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                AI-Powered <span class="gradient-text pulse-animation">Features</span> That Transform Exam Prep
+            </h1>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-10" data-aos="fade-up" data-aos-delay="200">
+                Discover how SmartExam's cutting-edge technologies make exam preparation efficient, personalized, and effective.
+            </p>
+            <a href="{% url 'register' %}" class="inline-block animated-gradient text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 shine-effect" data-aos="zoom-in" data-aos-delay="400">
+                Get Started Free
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Features Grid -->
+<div class="container mx-auto px-4 mb-20">
+    <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature Card 1 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-robot text-blue-600 dark:text-blue-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#3b82f6" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">AI Question Generation</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Our advanced AI analyzes your study materials and generates relevant exam questions that match real test patterns and complexity.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Pattern recognition from past papers</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Topic frequency analysis</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Multiple difficulty levels</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Feature Card 2 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-brain text-purple-600 dark:text-purple-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#8b5cf6" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Personalized Learning</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Every student is unique. Our system adapts to your learning style, strengths, and weaknesses to create personalized study plans.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Adaptive question difficulty</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Focus on weak areas</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Custom study schedules</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Feature Card 3 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-chart-line text-green-600 dark:text-green-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#10b981" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Analytics Dashboard</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Track your progress with comprehensive analytics that give insights into your performance and improvement areas.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Performance visualizations</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Topic mastery tracking</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Progress over time</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Feature Card 4 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-file-alt text-red-600 dark:text-red-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#ef4444" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Smart Answers</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Get detailed, educational answers for each question with explanations, references, and additional context for deeper understanding.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Step-by-step explanations</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Source citations</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Related concept links</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Feature Card 5 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-cloud-download-alt text-yellow-600 dark:text-yellow-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#f59e0b" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Export Options</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Take your generated questions and answers anywhere with multiple export formats for online and offline study.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>PDF export with formatting</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Plain text format</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Flashcard integration</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Feature Card 6 -->
+            <div class="feature-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 fade-in path-animation">
+                <div class="h-16 w-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-6 relative">
+                    <i class="fas fa-bookmark text-indigo-600 dark:text-indigo-400 text-2xl feature-icon feature-icon-3d"></i>
+                    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" rx="15" fill="none" stroke="#6366f1" stroke-width="2" class="feature-icon-border" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Save & Revisit</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Save important questions, create custom collections, and revisit them anytime in your personalized library.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Question bookmarking</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Custom notes on questions</span>
+                    </li>
+                    <li class="flex items-center text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span>Categorization and tagging</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Features Section -->
+<div class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-20 mb-20 rounded-3xl relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-20 left-10 w-40 h-40 bg-blue-300/10 dark:bg-blue-500/5 rounded-full blur-xl"></div>
+    <div class="absolute bottom-10 right-10 w-60 h-60 bg-indigo-300/10 dark:bg-indigo-500/5 rounded-full blur-xl"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-16" data-aos="fade-up">
+                Advanced Features for <span class="gradient-text glow-effect">Power Users</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Left side: Image -->
+                <div class="order-2 md:order-1" data-aos="fade-right">
+                    <div class="rounded-xl shadow-xl overflow-hidden scale-in" id="feature-image">
+                        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600&q=80" 
+                             alt="Student using SmartExam on laptop" 
+                             class="w-full h-full object-cover transition-all duration-700 hover:scale-105">
+                    </div>
+                </div>
+                
+                <!-- Right side: Features list -->
+                <div class="order-1 md:order-2 space-y-6">
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="100">
+                        <div class="h-10 w-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center shadow-md pulse-animation">
+                            <i class="fas fa-sync-alt text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">AI Regeneration</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Not satisfied with a generated question? Regenerate alternatives with a single click to get variations or different difficulty levels.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="200">
+                        <div class="h-10 w-10 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center shadow-md pulse-animation">
+                            <i class="fas fa-layer-group text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Smart Syllabus Analysis</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Upload your course syllabus and let our AI analyze it to identify key topics, their weightage, and optimal focus areas for your exam preparation.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="300">
+                        <div class="h-10 w-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center shadow-md pulse-animation">
+                            <i class="fas fa-users text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Collaborative Study</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Share question sets with study groups, collaborate on answers, and track team progress with advanced collaboration features.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="400">
+                        <div class="h-10 w-10 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center shadow-md pulse-animation">
+                            <i class="fas fa-clock text-red-600 dark:text-red-400"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Timed Mock Exams</h3>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Create realistic exam simulations with timed sessions, formatted exactly like your actual exams to build confidence and improve time management.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonial Section -->
+<div class="container mx-auto px-4 mb-20">
+    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden" data-aos="fade-up">
+        <div class="grid grid-cols-1 md:grid-cols-2">
+            <!-- Testimonial content -->
+            <div class="p-12">
+                <div class="flex mb-6">
+                    <div class="text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <blockquote class="text-xl text-gray-800 dark:text-gray-200 italic mb-8 testimonial-text">
+                    "SmartExam's AI question generation has completely transformed how I prepare for exams. The questions are spot-on and I've seen a significant improvement in my scores."
+                </blockquote>
+                <div class="flex items-center">
+                    <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl pulse-animation">
+                        RS
+                    </div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-gray-900 dark:text-white">Rajat Singh</p>
+                        <p class="text-gray-600 dark:text-gray-400">Computer Science Student</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image -->
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 hidden md:block relative overflow-hidden">
+                <div class="absolute inset-0 bg-pattern opacity-20" 
+                     style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.2\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600&q=80" 
+                     alt="Happy student" 
+                     class="w-full h-full object-cover mix-blend-overlay opacity-50 hover:opacity-70 transition-opacity duration-500">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="container mx-auto px-4 mb-20">
+    <div class="max-w-5xl mx-auto bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl shadow-2xl overflow-hidden relative" data-aos="fade-up">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mt-20 -mr-20"></div>
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -mb-10 -ml-10"></div>
+        
+        <div class="p-12 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6" data-aos="zoom-in">Ready to Transform Your Exam Preparation?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                Join thousands of students who are using SmartExam to achieve better results with less stress.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
+                <a href="{% url 'register' %}" class="inline-block bg-white text-indigo-700 hover:bg-blue-50 font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 shine-effect">
+                    Get Started Free
+                </a>
+                <a href="{% url 'pricing' %}" class="inline-block bg-transparent border-2 border-white text-white hover:bg-white/10 font-bold py-3 px-8 rounded-xl transition duration-300 shine-effect">
+                    View Pricing Plans
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Comparison -->
+<div class="container mx-auto px-4 mb-20">
+    <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-16" data-aos="fade-up">
+        Compare Features Across Plans
+    </h2>
+    
+    <div class="max-w-6xl mx-auto overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg" data-aos="fade-up" data-aos-delay="200">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-gray-700">
+                        <th class="px-6 py-4 text-left text-gray-600 dark:text-gray-300 font-medium">Feature</th>
+                        <th class="px-6 py-4 text-center text-gray-600 dark:text-gray-300 font-medium">Free</th>
+                        <th class="px-6 py-4 text-center text-blue-600 dark:text-blue-400 font-semibold">Premium</th>
+                        <th class="px-6 py-4 text-center text-purple-600 dark:text-purple-400 font-semibold">Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- Row 1 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">AI Question Generation</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Limited</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Unlimited</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Unlimited</span></td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">Analytics Dashboard</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Basic</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Advanced</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Advanced+</span></td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">Export Options</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">TXT only</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">PDF, TXT</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">All Formats</span></td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">Smart Syllabus Analysis</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-times text-red-500"></i></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">Collaborative Study</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-times text-red-500"></i></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">5 members</span></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Unlimited</span></td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr class="hover-row">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">Priority Support</td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-times text-red-500"></i></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i></td>
+                        <td class="px-6 py-4 text-center"><i class="fas fa-check text-green-500"></i><span class="text-xs text-gray-500 block">Dedicated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 text-center">
+            <a href="{% url 'pricing' %}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline shine-effect inline-block px-4 py-2">
+                View detailed pricing and plan information <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Add animation library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Testimonial text typing animation
+    const testimonialText = document.querySelector('.testimonial-text');
+    if (testimonialText) {
+        testimonialText.classList.add('typing-animation');
+        setTimeout(() => {
+            // Remove typing animation after it's complete to avoid layout issues
+            testimonialText.classList.remove('typing-animation');
+        }, 4000);
+    }
+    
+    // Intersection Observer for scale-in animation
+    const scaleObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                scaleObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -100px 0px'
+    });
+    
+    // Observe elements that need scale animation
+    document.querySelectorAll('.scale-in').forEach(el => {
+        scaleObserver.observe(el);
+    });
+    
+    // Table row hover highlight animation
+    const tableRows = document.querySelectorAll('.hover-row');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.classList.add('highlight-animation');
+            setTimeout(() => {
+                this.classList.remove('highlight-animation');
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,581 @@
+{% extends 'base.html' %}
+
+{% block title %}Results - {{ subject }} - SmartExam{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enhanced dropdown styling */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .dropdown-menu {
+        position: absolute;
+        min-width: 160px;
+        background-color: #fff;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 9999; /* Increased z-index */
+        border-radius: 4px;
+        overflow: hidden;
+        border: 2px solid #e5e7eb; /* Thicker border */
+        top: 100%; /* Position right below the button */
+        margin-top: 4px;
+        right: 0; /* Align to the right of the button */
+    }
+    
+    .dark .dropdown-menu {
+        background-color: #374151;
+        border: 2px solid #4B5563;
+    }
+    
+    .dropdown-menu a {
+        display: block;
+        padding: 12px 16px; /* Larger padding */
+        text-decoration: none;
+        transition: background-color 0.2s;
+        font-weight: 500; /* Make text more visible */
+        color: #374151 !important; /* Force text color */
+    }
+    
+    .dark .dropdown-menu a {
+        color: #f3f4f6 !important; /* Force text color in dark mode */
+    }
+    
+    .dropdown-menu a:hover {
+        background-color: #f1f5f9;
+    }
+    
+    .dark .dropdown-menu a:hover {
+        background-color: #4B5563;
+    }
+    
+    /* Make export button more prominent */
+    .export-btn {
+        background-color: #10B981;
+        color: white !important;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .export-btn:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .export-btn {
+        background-color: #065f46;
+    }
+    
+    .dark .export-btn:hover {
+        background-color: #047857;
+    }
+    
+    /* Extra dropdown fixes */
+    .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Question card animations */
+    .question-card {
+        transition: all 0.3s ease;
+        transform: translateY(0);
+    }
+    
+    .question-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Animation for showing/hiding answers */
+    .answer-text {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+    
+    .answer-text.visible {
+        max-height: 2000px; /* Arbitrary large value */
+        opacity: 1;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+    }
+    
+    /* Button hover effects */
+    .action-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Animated icons */
+    .animated-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .animated-icon:hover {
+        transform: scale(1.2);
+    }
+    
+    /* Toast animation enhancements */
+    @keyframes slideIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateY(0); opacity: 1; }
+        to { transform: translateY(20px); opacity: 0; }
+    }
+    
+    .toast-slide-in {
+        animation: slideIn 0.3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .toast-slide-out {
+        animation: slideOut 0.3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Action panel card hover effects */
+    .action-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Fancy entry animation for sequential card loading */
+    .fadeInUp {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .staggered-animation:nth-child(1) { animation-delay: 0.1s; }
+    .staggered-animation:nth-child(2) { animation-delay: 0.2s; }
+    .staggered-animation:nth-child(3) { animation-delay: 0.3s; }
+    .staggered-animation:nth-child(4) { animation-delay: 0.4s; }
+    .staggered-animation:nth-child(5) { animation-delay: 0.5s; }
+    .staggered-animation:nth-child(n+6) { animation-delay: 0.6s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 fadeInUp">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ subject }}</h1>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                        Generated on {% now "F j, Y" %}
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 sm:gap-3">
+                    <!-- Direct export links instead of dropdown -->
+                    <a href="{% url 'export_questions' history_id=exam_history_id %}?format=pdf" class="export-btn mr-1 text-sm sm:text-base py-2" title="Export PDF">
+                        <i class="fas fa-file-pdf mr-1"></i> <span class="hidden sm:inline">PDF</span>
+                    </a>
+                    <a href="{% url 'export_questions' history_id=exam_history_id %}?format=txt" class="export-btn text-sm sm:text-base py-2" title="Export TXT">
+                        <i class="fas fa-file-alt mr-1"></i> <span class="hidden sm:inline">TXT</span>
+                    </a>
+                    <button onclick="window.print()" class="action-btn flex items-center px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base">
+                        <i class="fas fa-print mr-1 sm:mr-2"></i> <span class="hidden sm:inline">Print</span>
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="action-btn flex items-center px-3 sm:px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors text-sm sm:text-base">
+                        <i class="fas fa-history mr-1 sm:mr-2"></i> <span class="hidden sm:inline">History</span>
+                    </a>
+                    <a href="{% url 'home' %}" class="action-btn flex items-center px-3 sm:px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors text-sm sm:text-base">
+                        <i class="fas fa-plus mr-1 sm:mr-2"></i> <span class="hidden sm:inline">New</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content - Enhanced with Question Cards -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-6 fadeInUp" style="animation-delay: 0.2s;">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-medium text-gray-800 dark:text-white flex items-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2 animated-icon"></i>
+                    AI-Generated Questions & Answers
+                </h2>
+            </div>
+            
+            <div id="questions-container" class="p-6 space-y-6">
+                {% if questions_answers %}
+                    {% for qa in questions_answers %}
+                    <div class="question-card bg-gray-50 dark:bg-gray-900/50 rounded-xl shadow-sm overflow-hidden fadeInUp staggered-animation">
+                        <div class="bg-blue-100 dark:bg-blue-900/30 px-3 sm:px-6 py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                            <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400">
+                                Question {{ qa.question_num }}
+                            </h3>
+                            <div class="flex items-center space-x-2">
+                                <button type="button" onclick="toggleAnswer({{ forloop.counter }})" class="toggle-answer action-btn text-xs sm:text-sm px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
+                                    <span class="show-text">Show Answer</span>
+                                    <span class="hide-text hidden">Hide Answer</span>
+                                </button>
+                                <button type="button" onclick="saveQuestion({{ qa.question_num }}, '{{ exam_history_id }}')" class="save-question action-btn text-xs sm:text-sm px-2 sm:px-3 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition">
+                                    <i class="far fa-bookmark animated-icon"></i> <span class="hidden sm:inline">Save</span>
+                                </button>
+                                <button type="button" onclick="copyQuestion({{ forloop.counter }})" class="action-btn text-xs sm:text-sm px-2 py-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition">
+                                    <i class="far fa-copy animated-icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <div class="question-text prose dark:prose-invert max-w-none text-sm sm:text-base">
+                                {{ qa.question_text|linebreaksbr }}
+                            </div>
+                            <div id="answer-{{ forloop.counter }}" class="answer-text mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <div class="font-semibold text-green-600 dark:text-green-400 mb-3 flex items-center">
+                                    <i class="fas fa-check-circle mr-2 animated-icon"></i> Answer:
+                                </div>
+                                <div class="prose dark:prose-invert max-w-none text-sm sm:text-base">
+                                    {{ qa.answer_text|linebreaksbr }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div id="markdown-content" class="whitespace-pre-wrap font-serif leading-relaxed text-gray-800 dark:text-gray-200">
+                        {{ ai_response|safe }}
+                    </div>
+                {% endif %}
+                
+                <!-- Hidden form for saving questions -->
+                <form id="save-question-form" method="POST" action="{% url 'save_question' %}" style="display: none;">
+                    {% csrf_token %}
+                    <input type="hidden" name="exam_history_id" id="save-exam-history-id" value="{{ exam_history_id }}">
+                    <input type="hidden" name="question_text" id="save-question-text">
+                    <input type="hidden" name="answer_text" id="save-answer-text">
+                </form>
+            </div>
+        </div>
+        
+        <!-- Study Tips -->
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-lg shadow-md p-6 mb-6 fadeInUp" style="animation-delay: 0.4s;">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                <i class="fas fa-brain text-purple-500 mr-2 animated-icon"></i> Study Tips
+            </h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                <li>Review these questions daily to reinforce your understanding</li>
+                <li>Create flashcards from key concepts in the answers</li>
+                <li>Practice explaining these answers to a friend or study group</li>
+                <li>Save questions that you find challenging for focused review</li>
+                <li>Compare these answers with your textbook for additional context</li>
+            </ul>
+        </div>
+        
+        <!-- Action Panel -->
+        <div class="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow-sm p-6 fadeInUp" style="animation-delay: 0.5s;">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">What's Next?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="{% url 'home' %}" class="action-card flex items-center justify-center px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all text-center text-gray-700 dark:text-gray-300">
+                    <div>
+                        <i class="fas fa-plus-circle text-blue-500 text-xl mb-1 animated-icon"></i>
+                        <div class="font-medium">Generate More Questions</div>
+                    </div>
+                </a>
+                <a href="{% url 'dashboard' %}" class="action-card flex items-center justify-center px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all text-center text-gray-700 dark:text-gray-300">
+                    <div>
+                        <i class="fas fa-history text-green-500 text-xl mb-1 animated-icon"></i>
+                        <div class="font-medium">View Exam History</div>
+                    </div>
+                </a>
+                <a href="#" onclick="shareContent(); return false;" class="action-card flex items-center justify-center px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all text-center text-gray-700 dark:text-gray-300">
+                    <div>
+                        <i class="fas fa-share-alt text-purple-500 text-xl mb-1 animated-icon"></i>
+                        <div class="font-medium">Share With Friends</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Toast notification for copy/save actions -->
+        <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg flex items-center transform translate-y-20 opacity-0 transition-all duration-300">
+            <i id="toast-icon" class="fas fa-check-circle text-green-400 mr-2"></i>
+            <span id="toast-message"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle answer visibility with improved animation
+    function toggleAnswer(id) {
+        const answer = document.getElementById(`answer-${id}`);
+        const button = event.currentTarget;
+        const showText = button.querySelector('.show-text');
+        const hideText = button.querySelector('.hide-text');
+        
+        if (answer.classList.contains('visible')) {
+            answer.classList.remove('visible');
+            setTimeout(() => {
+                answer.classList.add('hidden');
+            }, 400); // Match the transition duration
+        } else {
+            answer.classList.remove('hidden');
+            // Force a reflow to ensure the transition works
+            void answer.offsetWidth;
+            answer.classList.add('visible');
+        }
+        
+        showText.classList.toggle('hidden');
+        hideText.classList.toggle('hidden');
+    }
+    
+    // Toggle export format dropdown
+    function toggleDropdown(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const button = event.currentTarget;
+        const dropdown = button.nextElementSibling;
+        
+        // First hide all other visible dropdowns
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown) {
+                menu.classList.add('hidden');
+            }
+        });
+        
+        // Toggle the current dropdown
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            dropdown.classList.add('show'); // Add show class for extra visibility
+        } else {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('show');
+        }
+        
+        // Close dropdown when clicking outside
+        function closeDropdown(e) {
+            if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('show');
+                document.removeEventListener('click', closeDropdown);
+            }
+        }
+        
+        // Add the event listener after a small delay to avoid immediate closing
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdown);
+        }, 10);
+    }
+    
+    // Copy question text to clipboard
+    function copyQuestion(id) {
+        const card = document.querySelectorAll('.question-card')[id-1];
+        const questionText = card.querySelector('.question-text').innerText;
+        
+        navigator.clipboard.writeText(questionText).then(() => {
+            showToast('Question copied to clipboard!', 'check-circle');
+        }).catch(err => {
+            showToast('Failed to copy text', 'exclamation-circle');
+        });
+    }
+    
+    // Save question to user's saved questions
+    function saveQuestion(questionNum, examHistoryId) {
+        const cards = document.querySelectorAll('.question-card');
+        const questionIndex = parseInt(questionNum) - 1;
+        const card = cards[questionIndex < cards.length ? questionIndex : 0];
+        
+        const questionText = card.querySelector('.question-text').innerText;
+        let answerText = '';
+        
+        // Find corresponding answer
+        const answerDiv = card.querySelector('.answer-text');
+        if (answerDiv) {
+            answerText = answerDiv.querySelector('.prose').innerText;
+        }
+        
+        // Set form values and submit
+        document.getElementById('save-exam-history-id').value = examHistoryId;
+        document.getElementById('save-question-text').value = questionText;
+        document.getElementById('save-answer-text').value = answerText;
+        
+        const form = document.getElementById('save-question-form');
+        
+        // Use fetch API to submit the form
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Question saved successfully!', 'bookmark');
+                event.currentTarget.innerHTML = '<i class="fas fa-bookmark animated-icon"></i> Saved';
+                event.currentTarget.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-300');
+                event.currentTarget.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                
+                // Add animation to the button
+                event.currentTarget.classList.add('saved-animation');
+                setTimeout(() => {
+                    event.currentTarget.classList.remove('saved-animation');
+                    event.currentTarget.disabled = true;
+                }, 600);
+            } else {
+                showToast('Failed to save question', 'exclamation-circle');
+            }
+        })
+        .catch(error => {
+            showToast('Error saving question', 'exclamation-circle');
+        });
+    }
+    
+    // Show toast notification with enhanced animation
+    function showToast(message, icon) {
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastMessage = document.getElementById('toast-message');
+        
+        // Set icon and message
+        toastIcon.className = `fas fa-${icon} ${icon === 'check-circle' || icon === 'bookmark' ? 'text-green-400' : 'text-red-400'} mr-2`;
+        toastMessage.textContent = message;
+        
+        // Remove any existing animation classes
+        toast.classList.remove('translate-y-20', 'opacity-0', 'toast-slide-in', 'toast-slide-out');
+        
+        // Add the slide in animation
+        toast.classList.add('toast-slide-in');
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('toast-slide-in');
+            toast.classList.add('toast-slide-out');
+            
+            // Reset position after animation completes
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 300);
+        }, 3000);
+    }
+    
+    function shareContent() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ subject }} - SmartExam Questions',
+                text: 'Check out these AI-generated exam questions for {{ subject }}!',
+                url: window.location.href,
+            })
+            .catch((error) => console.log('Error sharing:', error));
+        } else {
+            alert('Web Share API not supported in your browser. Try copying the URL manually.');
+        }
+    }
+    
+    // Function to automatically format the AI response when no structured data is available
+    document.addEventListener('DOMContentLoaded', function() {
+        const contentElement = document.getElementById('markdown-content');
+        if (contentElement) {
+            let formattedContent = contentElement.innerHTML;
+            
+            // Bold the questions
+            formattedContent = formattedContent.replace(/^\d+\.\s+(.*?)$/gm, '<h3 class="text-xl font-bold text-blue-700 dark:text-blue-400 mt-8 mb-4">$1</h3>');
+            
+            // Format "Answer:" with styling
+            formattedContent = formattedContent.replace(/^(Answer:)$/gm, '<div class="font-semibold text-lg text-green-600 dark:text-green-400 mt-4 mb-2">$1</div>');
+            
+            // Format "Key points:" with styling
+            formattedContent = formattedContent.replace(/^(Key points:)$/gm, '<div class="font-semibold text-lg text-purple-600 dark:text-purple-400 mt-4 mb-2">$1</div>');
+            
+            // Format bullet points
+            formattedContent = formattedContent.replace(/^-\s+(.*?)$/gm, '<li class="ml-6 list-disc mb-1">$1</li>');
+            
+            // Apply the formatted content
+            contentElement.innerHTML = formattedContent;
+        }
+        
+        // Add staggered entrance animation to the question cards
+        const questionCards = document.querySelectorAll('.question-card');
+        questionCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (index * 100)); // Delay each card by 100ms more than the previous
+        });
+    });
+</script>
+
+<style>
+    @media print {
+        header, footer, .no-print {
+            display: none !important;
+        }
+        
+        body {
+            background-color: white !important;
+            color: black !important;
+        }
+        
+        .container {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        
+        .bg-white, .bg-gradient-to-r {
+            background: white !important;
+            box-shadow: none !important;
+        }
+        
+        h1, h2, h3, p {
+            color: black !important;
+        }
+        
+        .text-blue-700, .text-green-600, .text-purple-600 {
+            color: black !important;
+            font-weight: bold;
+        }
+        
+        /* Show all answers when printing */
+        .answer-text {
+            display: block !important;
+            max-height: none !important;
+            opacity: 1 !important;
+        }
+        
+        /* Hide buttons when printing */
+        button {
+            display: none !important;
+        }
+    }
+    
+    /* Additional animation for button after saving */
+    @keyframes savedPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .saved-animation {
+        animation: savedPulse 0.6s ease-in-out;
+    }
+</style>
+{% endblock %}

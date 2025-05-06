@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - SmartExam{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Team member card animations */
+    .team-card {
+        transition: all 0.3s ease;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Image hover effect */
+    .image-container {
+        overflow: hidden;
+    }
+    
+    .image-zoom {
+        transition: transform 0.5s ease;
+    }
+    
+    .image-container:hover .image-zoom {
+        transform: scale(1.05);
+    }
+    
+    /* Value card animations */
+    .value-card {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    
+    .value-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Icon animation */
+    .value-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .value-card:hover .value-icon {
+        transform: scale(1.2);
+    }
+    
+    /* Stats counter animation */
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-number {
+        display: inline-block;
+        animation: countUp 1s ease forwards;
+    }
+    
+    /* Decorative elements */
+    .floating-dot {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.3);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 pt-12 pb-16 rounded-3xl mb-12 relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="floating-dot w-32 h-32 top-10 right-10 opacity-20"></div>
+    <div class="floating-dot w-24 h-24 bottom-10 left-10 opacity-30" style="animation-delay: 1s;"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center" data-aos="fade-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                About <span class="text-blue-600 dark:text-blue-400">SmartExam</span>
+            </h1>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-8">
+                Revolutionizing exam preparation with AI technology
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Our Story Section -->
+<div class="container mx-auto px-4 mb-16">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-10 items-center">
+            <div class="w-full md:w-1/2" data-aos="fade-right">
+                <div class="image-container rounded-xl shadow-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" 
+                         alt="Student studying" 
+                         class="image-zoom w-full object-cover h-80 md:h-96">
+                </div>
+            </div>
+            <div class="w-full md:w-1/2" data-aos="fade-left" data-aos-delay="200">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Story</h2>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    SmartExam was born from a simple observation: students spend countless hours preparing for exams, often unsure if they're focusing on the right topics or questions.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    Founded in 2024 by a team of AI specialists and educational experts, our mission is to make exam preparation more efficient, personalized, and accessible for students worldwide.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300">
+                    By analyzing course syllabi and leveraging the latest in artificial intelligence, SmartExam generates highly relevant practice questions that help students prepare strategically for their exams.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Our Mission Section with Statistics -->
+<div class="bg-gray-50 dark:bg-gray-800 py-16 mb-16 relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-200 dark:bg-blue-900/20 rounded-full -mr-32 -mt-32 opacity-30"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-200 dark:bg-purple-900/20 rounded-full -ml-24 -mb-24 opacity-30"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center" data-aos="fade-up">Our Mission</h2>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-12 text-center" data-aos="fade-up" data-aos-delay="100">
+                To empower students with AI-driven tools that transform how they prepare for and succeed in their academic examinations
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <!-- Stat 1 -->
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md transform transition-all duration-300 hover:scale-105" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2 stat-number">95%</div>
+                    <p class="text-gray-700 dark:text-gray-300 font-medium">of students report improved exam confidence</p>
+                </div>
+                
+                <!-- Stat 2 -->
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md transform transition-all duration-300 hover:scale-105" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2 stat-number">500K+</div>
+                    <p class="text-gray-700 dark:text-gray-300 font-medium">questions generated for students worldwide</p>
+                </div>
+                
+                <!-- Stat 3 -->
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md transform transition-all duration-300 hover:scale-105" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2 stat-number">85%</div>
+                    <p class="text-gray-700 dark:text-gray-300 font-medium">average improvement in exam readiness</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Our Team Section -->
+<div class="container mx-auto px-4 mb-16">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center" data-aos="fade-up">Meet Our Team</h2>
+    <p class="text-xl text-gray-700 dark:text-gray-300 mb-12 text-center max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        Our diverse team combines expertise in artificial intelligence, education technology, and academic excellence
+    </p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Team Member 1 -->
+        <div class="team-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+            <div class="h-48 bg-gray-200 dark:bg-gray-700 image-container">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" 
+                     alt="Team member" 
+                     class="w-full h-full object-cover image-zoom">
+            </div>
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Rahul Sharma</h3>
+                <p class="text-blue-600 dark:text-blue-400 text-sm font-medium mb-3">Founder & CEO</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Former education technologist with a passion for AI applications in learning and assessment.</p>
+                <div class="mt-4 flex space-x-3">
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Member 2 -->
+        <div class="team-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+            <div class="h-48 bg-gray-200 dark:bg-gray-700 image-container">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80" 
+                     alt="Team member" 
+                     class="w-full h-full object-cover image-zoom">
+            </div>
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Priya Gupta</h3>
+                <p class="text-blue-600 dark:text-blue-400 text-sm font-medium mb-3">CTO</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">AI researcher with expertise in natural language processing and machine learning for educational applications.</p>
+                <div class="mt-4 flex space-x-3">
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Member 3 -->
+        <div class="team-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="300">
+            <div class="h-48 bg-gray-200 dark:bg-gray-700 image-container">
+                <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" 
+                     alt="Team member" 
+                     class="w-full h-full object-cover image-zoom">
+            </div>
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Vikram Patel</h3>
+                <p class="text-blue-600 dark:text-blue-400 text-sm font-medium mb-3">Head of Education</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Former university professor with deep experience in curriculum development and assessment methodologies.</p>
+                <div class="mt-4 flex space-x-3">
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Member 4 -->
+        <div class="team-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="400">
+            <div class="h-48 bg-gray-200 dark:bg-gray-700 image-container">
+                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=461&q=80" 
+                     alt="Team member" 
+                     class="w-full h-full object-cover image-zoom">
+            </div>
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Anjali Kumar</h3>
+                <p class="text-blue-600 dark:text-blue-400 text-sm font-medium mb-3">UX Design Lead</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Human-computer interaction specialist focused on creating intuitive educational experiences.</p>
+                <div class="mt-4 flex space-x-3">
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"><i class="fab fa-dribbble"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Values Section -->
+<div class="bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-gray-800 dark:to-indigo-900 py-16 mb-16 rounded-3xl relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-10 right-10 w-40 h-40 bg-blue-300 dark:bg-blue-800/30 rounded-full blur-xl opacity-30"></div>
+    <div class="absolute bottom-10 left-10 w-40 h-40 bg-indigo-300 dark:bg-indigo-800/30 rounded-full blur-xl opacity-30"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-12 text-center" data-aos="fade-up">Our Core Values</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Value 1 -->
+            <div class="value-card bg-white dark:bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="100">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 mb-6 value-icon">
+                    <i class="fas fa-brain text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Innovation</h3>
+                <p class="text-gray-600 dark:text-gray-400">We constantly push the boundaries of what's possible with AI in education, creating tools that transform learning experiences.</p>
+            </div>
+            
+            <!-- Value 2 -->
+            <div class="value-card bg-white dark:bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="200">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 mb-6 value-icon">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Academic Excellence</h3>
+                <p class="text-gray-600 dark:text-gray-400">We're committed to helping students achieve their best academic potential through personalized, high-quality learning resources.</p>
+            </div>
+            
+            <!-- Value 3 -->
+            <div class="value-card bg-white dark:bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-md" data-aos="fade-up" data-aos-delay="300">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 mb-6 value-icon">
+                    <i class="fas fa-users text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Accessibility</h3>
+                <p class="text-gray-600 dark:text-gray-400">We believe quality education resources should be accessible to all students, regardless of their background or location.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="container mx-auto px-4 mb-16">
+    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row">
+            <div class="w-full md:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 p-12 text-white relative overflow-hidden">
+                <!-- Decorative elements -->
+                <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mt-10 -mr-10"></div>
+                <div class="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -mb-8 -ml-8"></div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-4">Ready to transform your exam preparation?</h2>
+                    <p class="mb-6">Join thousands of students who are using SmartExam to study smarter, not harder.</p>
+                    <a href="{% url 'register' %}" class="inline-block bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg transition hover:bg-blue-50 hover:shadow-lg transform hover:-translate-y-1">
+                        Get Started Free
+                    </a>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 p-12">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Why students love us</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="100">
+                        <div class="flex-shrink-0 text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="ml-3 text-gray-600 dark:text-gray-400 text-sm italic">"SmartExam helped me identify my weak areas and focus my study time more effectively. I aced my finals!"</p>
+                    </div>
+                    <div class="flex items-start" data-aos="fade-left" data-aos-delay="200">
+                        <div class="flex-shrink-0 text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="ml-3 text-gray-600 dark:text-gray-400 text-sm italic">"The AI-generated questions were incredibly relevant to my actual exams. It's like the platform knew exactly what would be on the test!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize stat counter animations when they come into view
+    document.addEventListener('DOMContentLoaded', function() {
+        // Stat counter animation with intersection observer
+        const statElements = document.querySelectorAll('.stat-number');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+        
+        statElements.forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+{% endblock %}

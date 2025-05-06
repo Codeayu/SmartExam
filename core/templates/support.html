@@ -1,0 +1,558 @@
+{% extends 'base.html' %}
+
+{% block title %}Support - SmartExam{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Accordion styling */
+    .accordion-item {
+        transition: all 0.3s ease;
+    }
+    
+    .accordion-item:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    /* Search input styling */
+    .search-input {
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Categories styling */
+    .category-card {
+        transition: all 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Glowing dot animation */
+    @keyframes pulse {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; }
+        100% { opacity: 0.5; }
+    }
+    
+    .live-chat-status {
+        animation: pulse 2s infinite;
+    }
+    
+    /* Support contact card highlight */
+    .support-card {
+        transition: all 0.3s ease;
+    }
+    
+    .support-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 pt-12 pb-24 rounded-3xl mb-10 relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-200 dark:bg-blue-900/20 rounded-full -mr-32 -mt-32 opacity-50"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-200 dark:bg-purple-900/20 rounded-full -ml-24 -mb-24 opacity-50"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                How Can We Help You?
+            </h1>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-8">
+                Find answers to common questions or get in touch with our support team
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto">
+                <div class="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow-md p-2 relative">
+                    <i class="fas fa-search text-gray-400 ml-3 mr-2"></i>
+                    <input type="text" id="faqSearch" placeholder="Search for answers..." 
+                           class="w-full py-3 px-2 text-gray-700 dark:text-gray-300 bg-transparent border-none focus:outline-none search-input">
+                </div>
+                
+                <div id="searchResults" class="hidden mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 absolute left-0 right-0 z-10">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Type to see search results</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Cards -->
+<div class="container mx-auto px-4 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 -mt-4">
+        <!-- Getting Started -->
+        <div class="category-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-rocket text-blue-600 dark:text-blue-400 text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">Getting Started</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">New to SmartExam? Learn how to get the most out of our platform.</p>
+            <a href="#getting-started" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Learn More →</a>
+        </div>
+        
+        <!-- Account & Billing -->
+        <div class="category-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-credit-card text-purple-600 dark:text-purple-400 text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">Account & Billing</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Manage your subscription, payment methods, and billing information.</p>
+            <a href="#account-billing" class="text-purple-600 dark:text-purple-400 hover:underline font-medium">Learn More →</a>
+        </div>
+        
+        <!-- Using SmartExam -->
+        <div class="category-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-lightbulb text-green-600 dark:text-green-400 text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">Using SmartExam</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Tips and tutorials on how to use all features effectively.</p>
+            <a href="#using-smartexam" class="text-green-600 dark:text-green-400 hover:underline font-medium">Learn More →</a>
+        </div>
+        
+        <!-- Troubleshooting -->
+        <div class="category-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-wrench text-red-600 dark:text-red-400 text-2xl"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">Troubleshooting</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">Solutions to common problems and technical issues.</p>
+            <a href="#troubleshooting" class="text-red-600 dark:text-red-400 hover:underline font-medium">Learn More →</a>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Sections -->
+<div class="container mx-auto px-4 mb-16">
+    <!-- Getting Started Section -->
+    <div id="getting-started" class="mb-16">
+        <div class="flex items-center mb-8">
+            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                <i class="fas fa-rocket text-blue-600 dark:text-blue-400 text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white ml-4">Getting Started</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I create an account?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-blue-600 dark:text-blue-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To create an account:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Click on the "Register" button in the top right corner of the page</li>
+                        <li>Fill in your personal details including name, email address, and password</li>
+                        <li>Agree to our Terms of Service and Privacy Policy</li>
+                        <li>Click "Create Account"</li>
+                        <li>Verify your email address by clicking the link we send you</li>
+                    </ol>
+                    <div class="mt-4">
+                        <a href="{% url 'register' %}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline">Go to Registration Page</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">What do I need to use SmartExam?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-blue-600 dark:text-blue-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To use SmartExam effectively, you'll need:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>A modern web browser (Chrome, Firefox, Safari, or Edge)</li>
+                        <li>Your course syllabus in PDF format</li>
+                        <li>Optional: Previous year question papers in PDF format</li>
+                        <li>A stable internet connection</li>
+                    </ul>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Our platform is fully web-based, so there's no need to install any software on your device.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I generate my first set of questions?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-blue-600 dark:text-blue-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Follow these steps to generate your first set of questions:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Log in to your SmartExam account</li>
+                        <li>Click on "Generate Questions" or go to the home page</li>
+                        <li>Enter your subject name</li>
+                        <li>Set your preferences (number of questions, difficulty level)</li>
+                        <li>Upload your syllabus in PDF format</li>
+                        <li>Optionally, upload previous year question papers</li>
+                        <li>Click "Generate Exam Questions"</li>
+                    </ol>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Our AI will analyze your documents and generate relevant questions with detailed answers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account & Billing Section -->
+    <div id="account-billing" class="mb-16">
+        <div class="flex items-center mb-8">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                <i class="fas fa-credit-card text-purple-600 dark:text-purple-400 text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white ml-4">Account & Billing</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I upgrade my plan?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-purple-600 dark:text-purple-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To upgrade your subscription plan:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Log in to your SmartExam account</li>
+                        <li>Go to "Account Settings" from your profile dropdown</li>
+                        <li>Select the "Subscription" tab</li>
+                        <li>Click "Upgrade Plan"</li>
+                        <li>Choose your new plan (Standard or Premium)</li>
+                        <li>Enter your payment details</li>
+                        <li>Confirm the upgrade</li>
+                    </ol>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Your plan will be upgraded immediately, and you'll have access to the new features right away. The difference in price will be prorated based on your current billing cycle.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I update my payment method?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-purple-600 dark:text-purple-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300">To update your payment method:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Log in to your SmartExam account</li>
+                        <li>Go to "Account Settings"</li>
+                        <li>Select the "Billing" tab</li>
+                        <li>Click "Update Payment Method"</li>
+                        <li>Enter your new payment information</li>
+                        <li>Click "Save Changes"</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I cancel my subscription?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-purple-600 dark:text-purple-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To cancel your subscription:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Log in to your SmartExam account</li>
+                        <li>Go to "Account Settings"</li>
+                        <li>Select the "Subscription" tab</li>
+                        <li>Click "Cancel Subscription"</li>
+                        <li>Follow the prompts to confirm cancellation</li>
+                    </ol>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Your subscription will remain active until the end of your current billing period. After cancellation, your account will be downgraded to the free plan.
+                    </p>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        If you cancel within the first 30 days of your paid subscription, you may be eligible for a refund under our money-back guarantee.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Using SmartExam Section -->
+    <div id="using-smartexam" class="mb-16">
+        <div class="flex items-center mb-8">
+            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                <i class="fas fa-lightbulb text-green-600 dark:text-green-400 text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white ml-4">Using SmartExam</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I save important questions?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-green-600 dark:text-green-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To save important questions for later review:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Generate a set of questions or view your exam history</li>
+                        <li>Find the question you want to save</li>
+                        <li>Click the bookmark icon near the question</li>
+                        <li>The question will be added to your "Saved Questions" in your dashboard</li>
+                    </ol>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        You can access all your saved questions by navigating to "Dashboard" > "Saved Questions".
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">How do I export questions and answers?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-green-600 dark:text-green-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">To export your questions and answers:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>View your generated questions or go to your exam history</li>
+                        <li>Look for the "Export" button in the top right corner</li>
+                        <li>Choose your preferred format (TXT or PDF)</li>
+                        <li>Wait for the export to complete</li>
+                        <li>The file will be downloaded to your device automatically</li>
+                    </ol>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Free users can export in TXT format only. Standard and Premium users have access to multiple export formats.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">What file formats are supported for syllabus upload?</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-green-600 dark:text-green-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Currently, we support the following file formats:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>PDF (.pdf) - Recommended format</li>
+                        <li>Text files (.txt)</li>
+                        <li>Word documents (.doc, .docx)</li>
+                    </ul>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        For best results, we recommend using PDF format as it maintains formatting and structure.
+                    </p>
+                    <p class="mt-2 text-gray-600 dark:text-gray-300">
+                        Maximum file size: 10MB per document.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Troubleshooting Section -->
+    <div id="troubleshooting" class="mb-16">
+        <div class="flex items-center mb-8">
+            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                <i class="fas fa-wrench text-red-600 dark:text-red-400 text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white ml-4">Troubleshooting</h2>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">I'm having trouble uploading my PDF files</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-red-600 dark:text-red-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">If you're having issues uploading PDF files, try these solutions:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Ensure your file is under 10MB in size</li>
+                        <li>Make sure the file is not password-protected or encrypted</li>
+                        <li>Try converting any scanned PDFs to text-searchable PDFs</li>
+                        <li>Clear your browser cache and try again</li>
+                        <li>Try using a different browser (Chrome, Firefox, Edge)</li>
+                    </ul>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        If you continue to experience issues, please contact our support team with details about the specific errors you encounter.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">The AI-generated answers seem irrelevant to my syllabus</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-red-600 dark:text-red-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">If the AI-generated content seems irrelevant, consider these points:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Check that the syllabus document you uploaded is text-searchable (not just scanned images)</li>
+                        <li>Ensure you've entered the correct subject name</li>
+                        <li>Try uploading previous year question papers to improve relevance</li>
+                        <li>Use the "Specific Topics" field to focus the AI on particular areas</li>
+                        <li>For complex or specialized subjects, consider using the Premium plan for access to our advanced AI models</li>
+                    </ul>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        Our AI improves with each iteration. If you continue to receive irrelevant questions, please provide feedback through our support system so we can improve our algorithms.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item border-b border-gray-200 dark:border-gray-700" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full py-4 px-6 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="font-medium text-gray-900 dark:text-white">PDF export is not working</span>
+                    <i class="fas" :class="open ? 'fa-chevron-up text-red-600 dark:text-red-400' : 'fa-chevron-down text-gray-400'"></i>
+                </button>
+                <div x-show="open" class="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">If you're having issues with PDF export, try these solutions:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300">
+                        <li>Confirm that you have a Standard or Premium subscription (PDF export is not available on the free plan)</li>
+                        <li>Try using a different browser</li>
+                        <li>Ensure you have allowed pop-ups from our website</li>
+                        <li>Try exporting fewer questions at once (large documents may take longer to process)</li>
+                        <li>If available, try using the TXT export option as an alternative</li>
+                    </ul>
+                    <p class="mt-4 text-gray-600 dark:text-gray-300">
+                        If the issue persists, please contact our support team with your browser details and specific error messages.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Support Section -->
+<div class="container mx-auto px-4 mb-16">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Still Need Help?</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Email Support -->
+        <div class="support-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-envelope text-blue-600 dark:text-blue-400 text-xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl text-gray-900 dark:text-white mb-2">Email Support</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                Send us a detailed message and we'll get back to you within 24 hours.
+            </p>
+            <a href="{% url 'contact' %}" class="text-blue-600 dark:text-blue-400 font-medium hover:underline flex items-center">
+                Contact Us <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        
+        <!-- Live Chat -->
+        <div class="support-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="flex items-center mb-6">
+                <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-comments text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <span class="flex items-center">
+                        <span class="h-3 w-3 bg-green-500 rounded-full live-chat-status mr-2"></span>
+                        <span class="text-green-500 dark:text-green-400 text-sm font-medium">Online Now</span>
+                    </span>
+                </div>
+            </div>
+            <h3 class="font-semibold text-xl text-gray-900 dark:text-white mb-2">Live Chat</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                Chat with our support team in real-time for immediate assistance.
+            </p>
+            <button class="text-green-600 dark:text-green-400 font-medium hover:underline flex items-center" onclick="openLiveChat()">
+                Start Chat <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+        
+        <!-- Knowledge Base -->
+        <div class="support-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-book text-purple-600 dark:text-purple-400 text-xl"></i>
+            </div>
+            <h3 class="font-semibold text-xl text-gray-900 dark:text-white mb-2">Help Articles</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                Explore our comprehensive knowledge base for in-depth guides and tutorials.
+            </p>
+            <a href="{% url 'support' %}" class="text-purple-600 dark:text-purple-400 font-medium hover:underline flex items-center">
+                Browse Articles <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('faqSearch');
+        const searchResults = document.getElementById('searchResults');
+        const faqContent = document.querySelectorAll('.accordion-item');
+        
+        // Show/hide the search results container
+        searchInput.addEventListener('focus', function() {
+            searchResults.classList.remove('hidden');
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            // Small delay to allow for clicks on the results
+            setTimeout(() => {
+                searchResults.classList.add('hidden');
+            }, 200);
+        });
+        
+        // Filter FAQ items
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length < 2) {
+                searchResults.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400">Type at least 2 characters to search</div>';
+                return;
+            }
+            
+            // Search through FAQ items
+            let results = [];
+            faqContent.forEach(faq => {
+                const question = faq.querySelector('button span').innerText.toLowerCase();
+                if (question.includes(query)) {
+                    results.push({
+                        question: faq.querySelector('button span').innerText,
+                        id: faq.closest('[id]').id
+                    });
+                }
+            });
+            
+            // Show results
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400">No results found</div>';
+            } else {
+                let html = '<ul class="space-y-2">';
+                results.forEach(result => {
+                    html += `<li><a href="#${result.id}" class="block text-blue-600 dark:text-blue-400 hover:underline py-1">${result.question}</a></li>`;
+                });
+                html += '</ul>';
+                searchResults.innerHTML = html;
+            }
+        });
+    });
+    
+    // Live chat functionality (placeholder)
+    function openLiveChat() {
+        alert('Live chat feature is coming soon!');
+    }
+</script>
+{% endblock %}

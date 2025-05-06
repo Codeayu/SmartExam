@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SmartExam</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            background-color: #f8fafc;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .button {
+            display: inline-block;
+            background-color: #0ea5e9;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .highlights {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to SmartExam!</h1>
+    </div>
+    
+    <div class="content">
+        <p>Dear {{ user.first_name }},</p>
+        
+        <p>Thank you for joining SmartExam! We're excited to have you on board our AI-powered exam preparation platform.</p>
+        
+        <div class="highlights">
+            <p><strong>Your Account Details:</strong></p>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+        </div>
+        
+        <p>With SmartExam, you can:</p>
+        <ul>
+            <li>Generate AI-powered exam questions based on your syllabus</li>
+            <li>Save important questions for later review</li>
+            <li>Track your study progress with detailed analytics</li>
+            <li>Export questions in PDF or TXT format</li>
+        </ul>
+        
+        <p>To get started, log in to your account and upload your syllabus to generate your first set of practice questions!</p>
+        
+        <div style="text-align: center;">
+            <a href="https://smartexam.com/login" class="button">Log In Now</a>
+        </div>
+        
+        <p>If you have any questions or need assistance, please don't hesitate to contact our support team at <a href="mailto:codehack.infotech@gmail.com">codehack.infotech@gmail.com</a>.</p>
+        
+        <p>Happy studying!</p>
+        <p>The SmartExam Team</p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 SmartExam. All rights reserved.</p>
+        <p>If you did not create this account, please <a href="mailto:codehack.infotech@gmail.com">contact us</a>.</p>
+    </div>
+</body>
+</html>

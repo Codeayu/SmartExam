@@ -1,0 +1,773 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - SmartExam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+<style>
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    
+    /* Enhanced dropdown styling */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .dropdown-menu {
+        position: absolute;
+        min-width: 160px;
+        background-color: #fff;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 9999; /* Increased z-index */
+        border-radius: 4px;
+        overflow: hidden;
+        border: 2px solid #e5e7eb; /* Thicker border */
+        margin-top: 4px; /* Add space between button and dropdown */
+        right: 0; /* Align to right side of button */
+    }
+    
+    .dark .dropdown-menu {
+        background-color: #374151;
+        border: 2px solid #4B5563;
+    }
+    
+    .dropdown-menu a {
+        display: block;
+        padding: 12px 16px; /* Larger padding */
+        text-decoration: none;
+        transition: background-color 0.2s;
+        font-weight: 500; /* Make text more visible */
+        color: #374151 !important; /* Force text color */
+    }
+    
+    .dark .dropdown-menu a {
+        color: #f3f4f6 !important; /* Force text color in dark mode */
+    }
+    
+    .dropdown-menu a:hover {
+        background-color: #f1f5f9;
+    }
+    
+    .dark .dropdown-menu a:hover {
+        background-color: #4B5563;
+    }
+    
+    /* Export button styling */
+    .export-btn {
+        background-color: #10B981;
+        color: white !important;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+    
+    .export-btn:hover {
+        background-color: #059669;
+    }
+    
+    .dark .export-btn {
+        background-color: #065f46;
+    }
+    
+    .dark .export-btn:hover {
+        background-color: #047857;
+    }
+    
+    /* Extra dropdown fixes */
+    .dropdown-menu.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Sidebar -->
+            <div class="w-full md:w-1/4">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="bg-blue-600 rounded-full w-12 h-12 flex items-center justify-center text-white text-xl font-bold">
+                            {{ user.first_name.0 }}{{ user.last_name.0 }}
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold dark:text-white">{{ user.get_full_name }}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    
+                    <nav class="space-y-2">
+                        <button data-tab="overview" class="tab-btn w-full flex items-center px-4 py-3 text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400 rounded-lg font-medium">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            Overview
+                        </button>
+                        <button data-tab="history" class="tab-btn w-full flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                            <i class="fas fa-history mr-3"></i>
+                            Exam History
+                        </button>
+                        <button data-tab="saved" class="tab-btn w-full flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                            <i class="fas fa-bookmark mr-3"></i>
+                            Saved Questions
+                        </button>
+                        <a href="{% url 'home' %}" class="w-full flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                            <i class="fas fa-plus-circle mr-3"></i>
+                            New Prediction
+                        </a>
+                        <a href="#" class="w-full flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                            <i class="fas fa-user-cog mr-3"></i>
+                            Account Settings
+                        </a>
+                        <a href="{% url 'logout' %}" class="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg font-medium">
+                            <i class="fas fa-sign-out-alt mr-3"></i>
+                            Logout
+                        </a>
+                    </nav>
+                </div>
+                
+                <!-- Study Statistics -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Study Statistics</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm font-medium mb-1">
+                                <span class="text-gray-600 dark:text-gray-400">Total Questions</span>
+                                <span class="text-gray-900 dark:text-white">{{ total_questions }}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm font-medium mb-1">
+                                <span class="text-gray-600 dark:text-gray-400">Saved Questions</span>
+                                <span class="text-gray-900 dark:text-white">{{ saved_count }}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: {% if total_questions %}{{ saved_count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-sm font-medium mb-1">
+                                <span class="text-gray-600 dark:text-gray-400">Most studied</span>
+                                <span class="text-gray-900 dark:text-white truncate max-w-[150px]">{{ most_studied_subject|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="w-full md:w-3/4">
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="tab-content active">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Stat Card 1 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                                    <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Exam Predictions</h4>
+                                    <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ exam_count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stat Card 2 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                            <div class="flex items-center">
+                                <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
+                                    <i class="fas fa-bookmark text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Saved Questions</h4>
+                                    <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ saved_count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Subject Distribution -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                                <h3 class="text-lg font-medium text-gray-800 dark:text-white">Subject Distribution</h3>
+                            </div>
+                            <div class="p-6">
+                                <canvas id="subjectChart" height="200"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Difficulty Distribution -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                                <h3 class="text-lg font-medium text-gray-800 dark:text-white">Difficulty Distribution</h3>
+                            </div>
+                            <div class="p-6">
+                                <canvas id="difficultyChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                            <h3 class="text-lg font-medium text-gray-800 dark:text-white">Recent Activity</h3>
+                        </div>
+                        <div class="p-6">
+                            {% if exam_history %}
+                                <div class="space-y-4">
+                                    {% for exam in exam_history|slice:":3" %}
+                                    <div class="flex items-start">
+                                        <div class="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                                            <i class="fas fa-lightbulb text-blue-600 dark:text-blue-400"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-gray-800 dark:text-white font-medium">Generated questions for {{ exam.subject }}</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ exam.created_at|timesince }} ago</p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">No recent activity</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Tab -->
+                <div id="history-tab" class="tab-content">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Your Exam History</h2>
+                            <div>
+                                <select id="sortHistory" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 text-sm py-1 px-3">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="subject">Sort by Subject</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            {% if exam_history %}
+                                <div class="space-y-6" id="examHistoryList">
+                                    {% for exam in exam_history %}
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden" data-date="{{ exam.created_at|date:'Y-m-d' }}" data-subject="{{ exam.subject }}">
+                                        <div class="bg-gray-50 dark:bg-gray-700 px-3 sm:px-4 py-3 flex flex-col sm:flex-row justify-between gap-2">
+                                            <div>
+                                                <h3 class="font-medium text-gray-800 dark:text-white">{{ exam.subject }}</h3>
+                                                <div class="flex flex-wrap items-center gap-2 mt-1">
+                                                    <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{{ exam.created_at|date:"F j, Y, g:i a" }}</span>
+                                                    <span class="inline-block px-2 py-1 text-xs rounded-full 
+                                                        {% if exam.difficulty == 'easy' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300
+                                                        {% elif exam.difficulty == 'hard' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300
+                                                        {% else %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300{% endif %}
+                                                    ">
+                                                        {{ exam.difficulty|title }}
+                                                    </span>
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400">{{ exam.question_count }} questions</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex space-x-1 sm:space-x-2 mt-2 sm:mt-0">
+                                                <!-- Direct export links instead of dropdown -->
+                                                <a href="{% url 'export_questions' history_id=exam.id %}?format=pdf" class="export-btn mr-1 text-xs sm:text-sm py-1 px-2" title="Export PDF">
+                                                    <i class="fas fa-file-pdf mr-1"></i> <span class="hidden sm:inline">PDF</span>
+                                                </a>
+                                                <a href="{% url 'export_questions' history_id=exam.id %}?format=txt" class="export-btn text-xs sm:text-sm py-1 px-2" title="Export TXT">
+                                                    <i class="fas fa-file-alt mr-1"></i> <span class="hidden sm:inline">TXT</span>
+                                                </a>
+                                                <button onclick="toggleExam('exam-{{ exam.id }}')" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 ml-2">
+                                                    <i class="fas fa-chevron-down" id="icon-exam-{{ exam.id }}"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="exam-{{ exam.id }}" class="hidden">
+                                            <div class="p-4 bg-white dark:bg-gray-800">
+                                                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 mb-4 overflow-auto max-h-[500px]">
+                                                    <pre class="whitespace-pre-wrap font-mono text-sm text-gray-800 dark:text-gray-200">{{ exam.ai_response }}</pre>
+                                                </div>
+                                                <div class="flex flex-wrap gap-3">
+                                                    <a href="{% url 'home' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                                                        <i class="fas fa-plus-circle mr-1"></i> Generate New
+                                                    </a>
+                                                    <div class="dropdown relative inline-block">
+                                                        <button class="inline-block bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out" onclick="toggleDetailDropdown(event, {{ exam.id }})">
+                                                            <i class="fas fa-file-export mr-1"></i> Export <i class="fas fa-caret-down ml-1"></i>
+                                                        </button>
+                                                        <div id="detail-export-dropdown-{{ exam.id }}" class="dropdown-menu hidden absolute left-0 mt-2 py-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10">
+                                                            <a href="{% url 'export_questions' history_id=exam.id %}?format=pdf" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-pdf mr-2 text-red-500"></i> PDF Format
+                                                            </a>
+                                                            <a href="{% url 'export_questions' history_id=exam.id %}?format=txt" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                <i class="fas fa-file-alt mr-2 text-blue-500"></i> TXT Format
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <button onclick="window.print()" class="inline-block bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                                                        <i class="fas fa-print mr-1"></i> Print
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-8">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4">
+                                        <i class="fas fa-history text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">No Exam History</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 mt-2">You haven't generated any exam predictions yet.</p>
+                                    <a href="{% url 'home' %}" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
+                                        Generate Your First Prediction
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saved Questions Tab -->
+                <div id="saved-tab" class="tab-content">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Saved Questions</h2>
+                        </div>
+                        
+                        <div class="p-6">
+                            {% if saved_questions %}
+                                <div class="space-y-6">
+                                    {% for question in saved_questions %}
+                                    <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 flex justify-between items-center">
+                                            <h3 class="font-medium text-gray-800 dark:text-white truncate max-w-[70%]">{{ question.question_text|truncatechars:100 }}</h3>
+                                            <div class="flex space-x-2">
+                                                <button onclick="deleteQuestion({{ question.id }})" class="text-red-500 hover:text-red-700">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <button onclick="toggleSavedQuestion('saved-question-{{ question.id }}')" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                    <i class="fas fa-chevron-down" id="icon-saved-question-{{ question.id }}"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="saved-question-{{ question.id }}" class="hidden">
+                                            <div class="p-4 bg-white dark:bg-gray-800 space-y-4">
+                                                <div>
+                                                    <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Question:</h4>
+                                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                                                        <p class="text-gray-800 dark:text-gray-200">{{ question.question_text }}</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-lg font-medium text-green-600 dark:text-green-400 mb-2">Answer:</h4>
+                                                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                                                        <p class="text-gray-800 dark:text-gray-200">{{ question.answer_text }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Notes section -->
+                                                <div>
+                                                    <h4 class="text-lg font-medium text-purple-600 dark:text-purple-400 mb-2">My Notes:</h4>
+                                                    <textarea id="note-{{ question.id }}" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200" rows="3" placeholder="Add your notes here...">{{ question.notes }}</textarea>
+                                                    <button onclick="saveNote({{ question.id }})" class="mt-2 inline-block bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out">
+                                                        <i class="fas fa-save mr-1"></i> Save Notes
+                                                    </button>
+                                                </div>
+                                                
+                                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                    From: {{ question.exam_history.subject }} - {{ question.created_at|date:"F j, Y" }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-8">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mb-4">
+                                        <i class="fas fa-bookmark text-xl"></i>
+                                    </div>
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">No Saved Questions</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 mt-2">You haven't saved any questions yet. Save questions from your exam results to review later.</p>
+                                    <a href="{% url 'home' %}" class="inline-block mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-300 ease-in-out">
+                                        Generate New Questions
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg flex items-center transform translate-y-20 opacity-0 transition-all duration-300">
+    <i id="toast-icon" class="fas fa-check-circle text-green-400 mr-2"></i>
+    <span id="toast-message"></span>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show the selected tab content
+                document.getElementById(tabId + '-tab').classList.add('active');
+                
+                // Update tab button styles
+                tabBtns.forEach(btn => {
+                    btn.classList.remove('text-blue-600', 'bg-blue-50', 'dark:bg-blue-900/30', 'dark:text-blue-400');
+                    btn.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
+                
+                btn.classList.remove('text-gray-700', 'dark:text-gray-300');
+                btn.classList.add('text-blue-600', 'bg-blue-50', 'dark:bg-blue-900/30', 'dark:text-blue-400');
+            });
+        });
+        
+        // Sort functionality for history
+        const sortSelect = document.getElementById('sortHistory');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                const historyList = document.getElementById('examHistoryList');
+                if (!historyList) return;
+                
+                const items = Array.from(historyList.children);
+                
+                items.sort((a, b) => {
+                    if (this.value === 'newest') {
+                        return new Date(b.dataset.date) - new Date(a.dataset.date);
+                    } else if (this.value === 'oldest') {
+                        return new Date(a.dataset.date) - new Date(b.dataset.date);
+                    } else if (this.value === 'subject') {
+                        return a.dataset.subject.localeCompare(b.dataset.subject);
+                    }
+                });
+                
+                // Clear and re-append sorted items
+                historyList.innerHTML = '';
+                items.forEach(item => historyList.appendChild(item));
+            });
+        }
+        
+        // Initialize charts if data exists
+        const subjectCtx = document.getElementById('subjectChart');
+        const difficultyCtx = document.getElementById('difficultyChart');
+        
+        if (subjectCtx) {
+            const subjectData = {{ subject_stats|safe|default:"{}" }};
+            if (Object.keys(subjectData).length > 0) {
+                new Chart(subjectCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(subjectData),
+                        datasets: [{
+                            data: Object.values(subjectData),
+                            backgroundColor: [
+                                '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
+                                '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#06B6D4'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#1F2937'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        if (difficultyCtx) {
+            const difficultyData = {{ difficulty_stats|safe|default:"{}" }};
+            if (Object.keys(difficultyData).length > 0) {
+                new Chart(difficultyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Easy', 'Medium', 'Hard'],
+                        datasets: [{
+                            label: 'Questions by Difficulty',
+                            data: [
+                                difficultyData.easy || 0,
+                                difficultyData.medium || 0,
+                                difficultyData.hard || 0
+                            ],
+                            backgroundColor: [
+                                'rgba(16, 185, 129, 0.7)',  // Green for easy
+                                'rgba(59, 130, 246, 0.7)',  // Blue for medium
+                                'rgba(239, 68, 68, 0.7)'    // Red for hard
+                            ],
+                            borderColor: [
+                                'rgb(16, 185, 129)',
+                                'rgb(59, 130, 246)',
+                                'rgb(239, 68, 68)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#1F2937'
+                                },
+                                grid: {
+                                    color: document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#1F2937'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    });
+    
+    // Toggle export dropdown menu
+    function toggleExportDropdown(event, examId) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const dropdown = document.getElementById(`export-dropdown-${examId}`);
+        
+        // Close all other open dropdowns first
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Toggle this dropdown
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            dropdown.classList.add('show'); // Add show class for extra visibility
+        } else {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('show');
+        }
+        
+        // Close dropdown when clicking outside - with cleanup
+        function closeDropdown(e) {
+            if (!dropdown.contains(e.target) && !event.currentTarget.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('show');
+                document.removeEventListener('click', closeDropdown);
+            }
+        }
+        
+        // Add the event listener after a small delay to avoid immediate closing
+        setTimeout(() => {
+            document.addEventListener('click', closeDropdown);
+        }, 10);
+    }
+    
+    // Toggle detail export dropdown menu
+    function toggleDetailDropdown(event, examId) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const dropdown = document.getElementById(`detail-export-dropdown-${examId}`);
+        
+        // Close all other open dropdowns first
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdown && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Toggle this dropdown
+        if (dropdown.classList.contains('hidden')) {
+            dropdown.classList.remove('hidden');
+            dropdown.classList.add('show'); // Add show class for extra visibility
+        } else {
+            dropdown.classList.add('hidden');
+            dropdown.classList.remove('show');
+        }
+        
+        // Close dropdown when clicking outside - with cleanup
+        function closeDetailDropdown(e) {
+            if (!dropdown.contains(e.target) && !event.currentTarget.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                dropdown.classList.remove('show');
+                document.removeEventListener('click', closeDetailDropdown);
+            }
+        }
+        
+        // Add the event listener after a small delay to avoid immediate closing
+        setTimeout(() => {
+            document.addEventListener('click', closeDetailDropdown);
+        }, 10);
+    }
+    
+    function toggleExam(id) {
+        const exam = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        
+        if (exam.classList.contains('hidden')) {
+            exam.classList.remove('hidden');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        } else {
+            exam.classList.add('hidden');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+    }
+    
+    function toggleSavedQuestion(id) {
+        const question = document.getElementById(id);
+        const iconId = 'icon-' + id;
+        const icon = document.getElementById(iconId);
+        
+        if (question.classList.contains('hidden')) {
+            question.classList.remove('hidden');
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        } else {
+            question.classList.add('hidden');
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+    }
+    
+    function saveNote(questionId) {
+        const noteText = document.getElementById('note-' + questionId).value;
+        
+        fetch(`/add-note/${questionId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: `note=${encodeURIComponent(noteText)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Note saved successfully!', 'check-circle');
+            } else {
+                showToast('Failed to save note', 'exclamation-circle');
+            }
+        })
+        .catch(err => {
+            showToast('Error saving note', 'exclamation-circle');
+        });
+    }
+    
+    function deleteQuestion(questionId) {
+        if (!confirm('Are you sure you want to delete this saved question?')) {
+            return;
+        }
+        
+        fetch(`/delete-question/${questionId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Question deleted successfully!', 'check-circle');
+                // Remove the question element from DOM
+                const questionElement = document.querySelector(`#saved-question-${questionId}`).parentNode;
+                questionElement.remove();
+            } else {
+                showToast('Failed to delete question', 'exclamation-circle');
+            }
+        })
+        .catch(err => {
+            showToast('Error deleting question', 'exclamation-circle');
+        });
+    }
+    
+    function showToast(message, icon) {
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastMessage = document.getElementById('toast-message');
+        
+        toastIcon.className = `fas fa-${icon} ${icon === 'check-circle' ? 'text-green-400' : 'text-red-400'} mr-2`;
+        toastMessage.textContent = message;
+        
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
+    
+    // Helper function to get cookies (for CSRF token)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - SmartExam{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-100">
+    <div class="max-w-4xl w-full space-y-8 rounded-2xl p-8 shadow-[0_20px_50px_rgba(8,_112,_184,_0.2)] backdrop-blur-xl bg-white/70 border border-white/20 transform transition-all duration-300 hover:shadow-[0_25px_60px_rgba(8,_112,_184,_0.3)] animate__animated animate__fadeIn">
+        <div class="text-center">
+            <div class="flex justify-center">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-600 to-blue-500 flex items-center justify-center shadow-lg animate__animated animate__zoomIn">
+                    <i class="fas fa-user-graduate text-white text-2xl"></i>
+                </div>
+            </div>
+            <h2 class="mt-6 text-center text-4xl font-extrabold text-gray-900 animate__animated animate__fadeInUp">
+                Join SmartExam
+            </h2>
+            <p class="mt-2 text-center text-lg text-indigo-600 font-medium animate__animated animate__fadeInUp animate__delay-1s">
+                Create your account and unlock premium learning tools
+            </p>
+        </div>
+        
+        <form class="mt-8 space-y-6" method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 rounded-full"></div>
+                    <h3 class="text-lg font-medium text-gray-700 mt-3">Personal Information</h3>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-1s">
+                    <label for="first-name" class="text-sm font-medium text-gray-700 mb-1 block">First Name</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="first-name" name="first_name" type="text" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="First name">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-1s">
+                    <label for="last-name" class="text-sm font-medium text-gray-700 mb-1 block">Last Name</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="last-name" name="last_name" type="text" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Last name">
+                    </div>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2 mt-6">
+                    <div class="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 rounded-full"></div>
+                    <h3 class="text-lg font-medium text-gray-700 mt-3">Account Details</h3>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-2s">
+                    <label for="email-address" class="text-sm font-medium text-gray-700 mb-1 block">Email address</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="email-address" name="email" type="email" autocomplete="email" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Enter your email">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-2s">
+                    <label for="username" class="text-sm font-medium text-gray-700 mb-1 block">Username</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-at text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="username" name="username" type="text" autocomplete="username" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Choose a username">
+                    </div>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2 mt-6">
+                    <div class="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 rounded-full"></div>
+                    <h3 class="text-lg font-medium text-gray-700 mt-3">Additional Information</h3>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-3s">
+                    <label for="dob" class="text-sm font-medium text-gray-700 mb-1 block">Date of Birth</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-calendar text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="dob" name="dob" type="date" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-3s">
+                    <label for="mob" class="text-sm font-medium text-gray-700 mb-1 block">Mobile Number</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-mobile-alt text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="mob" name="mob" type="tel" 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Enter your mobile number">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-3s">
+                    <label for="college" class="text-sm font-medium text-gray-700 mb-1 block">College</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-university text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="college" name="college" type="text" 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Enter your college name">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-3s">
+                    <label for="address" class="text-sm font-medium text-gray-700 mb-1 block">Address</label>
+                    <div class="relative group">
+                        <div class="absolute top-4 left-4 flex items-start pointer-events-none">
+                            <i class="fas fa-home text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <textarea id="address" name="address" rows="3" 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Enter your address"></textarea>
+                    </div>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2 mt-6">
+                    <div class="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 rounded-full"></div>
+                    <h3 class="text-lg font-medium text-gray-700 mt-3">Security</h3>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-4s">
+                    <label for="password" class="text-sm font-medium text-gray-700 mb-1 block">Password</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="password" name="password" type="password" autocomplete="new-password" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300 
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Create a password">
+                    </div>
+                </div>
+                
+                <div class="space-y-2 animate__animated animate__fadeInUp animate__delay-4s">
+                    <label for="confirm-password" class="text-sm font-medium text-gray-700 mb-1 block">Confirm Password</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-indigo-500 group-hover:text-indigo-600 transition-colors"></i>
+                        </div>
+                        <input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" required 
+                            class="appearance-none relative block w-full px-12 py-4 border border-gray-300
+                            text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                            focus:border-indigo-500 transition-all duration-300 bg-white/60 backdrop-blur-sm shadow-sm" 
+                            placeholder="Confirm your password">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 animate__animated animate__fadeInUp animate__delay-4s">
+                <button type="submit" class="group relative w-full flex justify-center py-4 px-6 border border-transparent 
+                    text-md font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+                    hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                    focus:ring-indigo-500 transform transition-all duration-300 hover:scale-[1.01] shadow-lg hover:shadow-xl">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-4">
+                        <i class="fas fa-user-plus text-indigo-300 group-hover:text-indigo-200 transition-colors"></i>
+                    </span>
+                    Create Account
+                </button>
+            </div>
+            
+            <div class="text-center animate__animated animate__fadeIn animate__delay-5s">
+                <p class="text-sm text-gray-600">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-all duration-300 hover:translate-y-[-2px] inline-block">
+                        Sign in
+                    </a>
+                </p>
+                
+                <div class="mt-6 text-xs text-gray-500 px-8 text-center">
+                    By creating an account, you agree to our <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms of Service</a> and <a href="#" class="text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add animate.css for additional animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 30px white inset !important;
+        -webkit-text-fill-color: #111827 !important;
+    }
+    
+    /* Premium Design Elements */
+    input, textarea {
+        transition: all 0.3s ease;
+    }
+    
+    input:focus, textarea:focus {
+        transform: translateY(-2px);
+    }
+    
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+{% endblock %}
