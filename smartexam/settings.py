@@ -34,9 +34,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-3m9ik!1=q+qyl$hkz!=9-ql!c_^i*pcqlumr)u_7@(c14!40l6')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# Temporarily enable debug mode to help diagnose the issue
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '*']
+# Get the Railway-assigned URL from environment variables
+RAILWAY_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '')
+
+# Add Railway domains to allowed hosts
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
+
+# Add the specific Railway domain if available
+if RAILWAY_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_DOMAIN)
+    ALLOWED_HOSTS.append(f'*.{RAILWAY_DOMAIN}')
+
+# Also allow all hosts temporarily for troubleshooting
+ALLOWED_HOSTS.append('*')
 
 # Application definition
 
