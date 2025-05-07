@@ -1,2 +1,2 @@
-web: gunicorn smartexam.wsgi
+web: gunicorn smartexam.wsgi:application
 

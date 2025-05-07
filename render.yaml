@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: smartexam
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn smartexam.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: WEB_CONCURRENCY
+        value: 4
