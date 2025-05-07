@@ -60,8 +60,8 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key is None:
     raise ValueError("API key not found. Please set the 'GEMINI_API_KEY' environment variable.")
 
-# Initialize Gemini Client
-client = genai.Client(api_key=api_key)
+# Initialize Gemini API
+genai.configure(api_key=api_key)
 
 # Function to extract text from uploaded PDF
 def extract_text_from_pdf(uploaded_file):
@@ -193,11 +193,9 @@ Previous Year Questions:
         """
 
         try:
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=[prompt]
-            )
-            ai_response = response.candidates[0].content.parts[0].text
+            model = genai.GenerativeModel('gemini-2.0-flash')
+            response = model.generate_content(prompt)
+            ai_response = response.text
             
             # Store in session for later retrieval
             request.session['subject'] = subject
