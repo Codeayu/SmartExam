@@ -427,7 +427,13 @@
                 'X-Requested-With': 'XMLHttpRequest',
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            // First check if the response is ok (status in 200-299 range)
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 showToast('Question saved successfully!', 'bookmark');
@@ -442,11 +448,12 @@
                     event.currentTarget.disabled = true;
                 }, 600);
             } else {
-                showToast('Failed to save question', 'exclamation-circle');
+                showToast(data.message || 'Failed to save question', 'exclamation-circle');
             }
         })
         .catch(error => {
-            showToast('Error saving question', 'exclamation-circle');
+            console.error('Error:', error);
+            showToast('Error saving question. Please try again.', 'exclamation-circle');
         });
     }
     
