@@ -1,1 +1,1 @@
-web: gunicorn smartexam.wsgi --log-file -
+web: gunicorn smartexam.wsgi
