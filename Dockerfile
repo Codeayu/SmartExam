@@ -14,18 +14,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     python3-dev \
     default-mysql-client \
-    # Dependencies for PyMuPDF (fitz)
-    libmupdf-dev \
-    mupdf \
-    mupdf-tools \
-    libfreetype6-dev \
-    # Additional dependencies that might be needed
-    zlib1g-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libtiff-dev \
-    libxrender-dev \
-    libffi-dev \
     # PDF generation tools
     wkhtmltopdf \
     && apt-get clean \
@@ -34,12 +22,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create and set working directory
 WORKDIR /app
 
-# Install Python dependencies in two steps to handle complex packages better
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip wheel setuptools && \
-    # Install PyMuPDF separately first
-    pip install PyMuPDF==1.23.7 && \
-    # Then install the rest of the dependencies
     pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
