@@ -121,7 +121,7 @@ else:
             'USER': os.getenv("USER"),
             'PASSWORD': os.getenv("PASSWORD"),
             'HOST': os.getenv("HOST"),
-            'PORT': os.getenv("PORT", '3306'),
+            'PORT': 3306,  # Changed from PORT to DB_PORT to avoid conflict
             'OPTIONS': {
                 'init_command': 'SET session wait_timeout=300',  # 5 minutes timeout
                 'connect_timeout': 20,  # Connection timeout in seconds
