@@ -34,12 +34,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-3m9ik!1=q+qyl$hkz!=9-ql!c_^i*pcqlumr)u_7@(c14!40l6')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = False
 
 # Get deployment URL from environment variables
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com','*']
 
 # Add the specific Render domain if available
 if RENDER_EXTERNAL_HOSTNAME:
