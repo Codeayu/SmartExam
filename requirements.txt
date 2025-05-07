@@ -8,7 +8,8 @@ Pillow==10.0.0
 psycopg2-binary==2.9.9
 mysqlclient==2.1.1
 pymysql==1.1.0
-reportlab==4.0.4
+# Downgrading reportlab to be compatible with xhtml2pdf
+reportlab==3.6.13
 requests==2.32.3
 xhtml2pdf==0.2.11
 
