@@ -32,9 +32,11 @@ RUN pip install --upgrade pip setuptools wheel && \
     pip install pymysql==1.1.0 && \
     pip install psycopg2-binary==2.9.9 && \
     pip install requests==2.32.3 xhtml2pdf==0.2.11 && \
-    pip install --no-deps google-api-core==2.24.2 google-api-python-client==2.168.0 && \
-    pip install --no-deps google-auth==2.39.0 google-auth-httplib2==0.2.0 google-genai==1.12.1 && \
-    pip install -r requirements.txt --no-deps
+    pip install google-api-core==2.11.0 google-api-python-client==2.84.0 && \
+    pip install google-auth==2.17.3 google-auth-httplib2==0.1.0 && \
+    pip install protobuf==4.23.0 googleapis-common-protos==1.59.0 && \
+    pip install grpcio==1.54.0 && \
+    pip install google-generativeai==0.3.1
 
 # Copy project files
 COPY . .

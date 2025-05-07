@@ -2,12 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 import os
 import sys
-# Make PyMuPDF import optional with fallback methods
-try:
-    import fitz  # pymupdf
-    PYMUPDF_AVAILABLE = True
-except ImportError:
-    PYMUPDF_AVAILABLE = False
+import fitz  # pymupdf
 from google import genai
 from dotenv import load_dotenv
 from django.core.files.storage import FileSystemStorage
@@ -19,8 +14,6 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 import json
 import re
-import io
-import base64
 
 # Add GTK path to system path if on Windows
 if os.name == 'nt':  # Windows
@@ -45,55 +38,19 @@ if api_key is None:
 # Initialize Gemini Client
 client = genai.Client(api_key=api_key)
 
-# Function to extract text from uploaded PDF with multiple fallback methods
+# Function to extract text from uploaded PDF
 def extract_text_from_pdf(uploaded_file):
     fs = FileSystemStorage()
     filename = fs.save(uploaded_file.name, uploaded_file)
     file_path = fs.path(filename)
-    
+
     text = ""
-    
-    # Try PyMuPDF first if available
-    if PYMUPDF_AVAILABLE:
-        try:
-            with fitz.open(file_path) as pdf:
-                for page in pdf:
-                    text += page.get_text()
-            fs.delete(filename)  # Clean up
-            return text
-        except Exception as e:
-            print(f"PyMuPDF extraction failed: {str(e)}")
-            # Fall through to alternative methods
-    
-    # Fallback 1: Try using pdfplumber
-    try:
-        import pdfplumber
-        with pdfplumber.open(file_path) as pdf:
-            for page in pdf.pages:
-                text += page.extract_text() or ""
-        fs.delete(filename)
-        return text
-    except ImportError:
-        print("pdfplumber not available")
-    except Exception as e:
-        print(f"pdfplumber extraction failed: {str(e)}")
-    
-    # Fallback 2: Try using PyPDF2
-    try:
-        from PyPDF2 import PdfReader
-        reader = PdfReader(file_path)
-        for page in reader.pages:
-            text += page.extract_text() or ""
-        fs.delete(filename)
-        return text
-    except ImportError:
-        print("PyPDF2 not available")
-    except Exception as e:
-        print(f"PyPDF2 extraction failed: {str(e)}")
-    
-    # Last resort: Just inform the user that text extraction failed
-    fs.delete(filename)
-    return "PDF text extraction failed. Please provide the syllabus content manually."
+    with fitz.open(file_path) as pdf:
+        for page in pdf:
+            text += page.get_text()
+
+    fs.delete(filename)  # Clean up
+    return text
 
 # Home view to handle upload and prediction - Removed login_required decorator
 def home(request):
@@ -503,62 +460,49 @@ def export_questions(request, history_id):
                 'date': history.created_at
             })
             
-            # Try multiple PDF generation methods
-            
-            # Method 1: Try xhtml2pdf (more reliable in containers)
+            # Try to use WeasyPrint for PDF generation
             try:
-                from xhtml2pdf import pisa
+                # Check if GTK+ is properly installed on Windows
+                import os
+                if os.name == 'nt':  # Windows
+                    # Try to import cairo which is an essential dependency for WeasyPrint on Windows
+                    try:
+                        import cairo
+                    except ImportError:
+                        # If cairo is missing, suggest TXT format and provide detailed installation instructions
+                        messages.error(request, 
+                            "PDF generation requires additional libraries on Windows. "
+                            "Please use TXT format instead or follow the WeasyPrint installation guide: "
+                            "https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#windows")
+                        return redirect(request.path_info + '?format=txt')
                 
-                pdf_file = BytesIO()
-                pisa_status = pisa.CreatePDF(html_string, dest=pdf_file)
-                
-                if pisa_status.err:
-                    raise Exception("xhtml2pdf error: " + str(pisa_status.err))
-                    
-                pdf_file.seek(0)
-                response = HttpResponse(pdf_file, content_type='application/pdf')
-                response['Content-Disposition'] = f'attachment; filename="{history.subject}_questions.pdf"'
-                return response
-            
-            except ImportError:
-                print("xhtml2pdf not available")
-            except Exception as e:
-                print(f"xhtml2pdf error: {str(e)}")
-            
-            # Method 2: Try pdfkit
-            try:
-                import pdfkit
-                
-                pdf = pdfkit.from_string(html_string, False)
-                response = HttpResponse(pdf, content_type='application/pdf')
-                response['Content-Disposition'] = f'attachment; filename="{history.subject}_questions.pdf"'
-                return response
-                
-            except ImportError:
-                print("pdfkit not available")
-            except Exception as e:
-                print(f"pdfkit error: {str(e)}")
-            
-            # Method 3: Try WeasyPrint only if in a compatible environment
-            try:
+                # Import weasyprint and attempt PDF generation
                 import weasyprint
                 pdf_file = BytesIO()
                 weasyprint.HTML(string=html_string).write_pdf(pdf_file)
                 pdf_file.seek(0)
                 
+                # Create the HTTP response with appropriate headers
                 response = HttpResponse(pdf_file, content_type='application/pdf')
                 response['Content-Disposition'] = f'attachment; filename="{history.subject}_questions.pdf"'
+                
                 return response
                 
             except ImportError:
-                print("WeasyPrint not available")
-            except Exception as e:
-                print(f"WeasyPrint error: {str(e)}")
-            
-            # If all PDF methods fail, fallback to TXT
-            messages.warning(request, 
-                "PDF generation failed. Downloading as TXT file instead.")
-            return redirect(request.path_info + '?format=txt')
+                messages.error(request, 
+                    "WeasyPrint is not installed. Please install it with: pip install weasyprint "
+                    "or use the TXT format export option instead.")
+                # Redirect to the same URL but with txt format
+                return redirect(request.path_info + '?format=txt')
+            except Exception as pdf_error:
+                # Log the specific error for debugging
+                print(f"PDF Generation Error: {str(pdf_error)}")
+                messages.error(request, 
+                    f"Could not generate PDF: {str(pdf_error)}. "
+                    f"Please use TXT format instead or see installation instructions at: "
+                    f"https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#windows")
+                # Redirect to the same URL but with txt format
+                return redirect(request.path_info + '?format=txt')
         
     except ExamHistory.DoesNotExist:
         messages.error(request, 'Exam history not found')

@@ -34,19 +34,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-3m9ik!1=q+qyl$hkz!=9-ql!c_^i*pcqlumr)u_7@(c14!40l6')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Temporarily enable debug mode to help diagnose the issue
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Get the Railway-assigned URL from environment variables
-RAILWAY_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '')
+# Get deployment URL from environment variables
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 
-# Add Railway domains to allowed hosts
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
-# Add the specific Railway domain if available
-if RAILWAY_DOMAIN:
-    ALLOWED_HOSTS.append(RAILWAY_DOMAIN)
-    ALLOWED_HOSTS.append(f'*.{RAILWAY_DOMAIN}')
+# Add the specific Render domain if available
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Also allow all hosts temporarily for troubleshooting
 ALLOWED_HOSTS.append('*')
@@ -111,7 +108,7 @@ WSGI_APPLICATION = 'smartexam.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use Railway's DATABASE_URL if available, otherwise use the configured MySQL database
+# Use DATABASE_URL if available (provided by Render), otherwise use the configured MySQL database
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'), conn_max_age=600)
@@ -193,7 +190,13 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # CSRF settings
-CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://*.127.0.0.1',
+]
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
