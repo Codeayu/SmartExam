@@ -2,8 +2,33 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 import os
 import sys
-import fitz  # pymupdf
-from google import genai
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Make PyMuPDF import optional with fallback methods
+PYMUPDF_AVAILABLE = False
+try:
+    # Move the import into the try block to prevent application startup failure
+    # This is critical for deployment environments where PyMuPDF may not be installed
+    fitz = None  # Define fitz as None first
+    import fitz  # pymupdf
+    PYMUPDF_AVAILABLE = True
+    logger.info("PyMuPDF successfully imported")
+except ImportError:
+    logger.warning("PyMuPDF not available - PDF extraction will use alternative methods")
+
+# Add graceful import for Google APIs
+GOOGLE_API_AVAILABLE = False
+try:
+    import google.generativeai as genai
+    GOOGLE_API_AVAILABLE = True
+    logger.info("Google Generative AI module imported successfully")
+except ImportError as e:
+    logger.error(f"Failed to import Google Generative AI: {str(e)}")
+
 from dotenv import load_dotenv
 from django.core.files.storage import FileSystemStorage
 from .models import Customuser, SavedQuestion, ExamHistory
@@ -43,13 +68,54 @@ def extract_text_from_pdf(uploaded_file):
     fs = FileSystemStorage()
     filename = fs.save(uploaded_file.name, uploaded_file)
     file_path = fs.path(filename)
-
+    
     text = ""
-    with fitz.open(file_path) as pdf:
-        for page in pdf:
-            text += page.get_text()
-
-    fs.delete(filename)  # Clean up
+    
+    # Try PyMuPDF first if available
+    if PYMUPDF_AVAILABLE:
+        try:
+            with fitz.open(file_path) as pdf:
+                for page in pdf:
+                    text += page.get_text()
+            logger.info(f"Successfully extracted text with PyMuPDF from {filename}")
+        except Exception as e:
+            logger.error(f"PyMuPDF extraction failed: {str(e)}")
+            # Fall through to alternative methods
+    
+    # If PyMuPDF failed or isn't available, try alternative methods
+    if not text:
+        # Fallback 1: Try using pdfplumber
+        try:
+            import pdfplumber
+            with pdfplumber.open(file_path) as pdf:
+                for page in pdf.pages:
+                    text += page.extract_text() or ""
+            logger.info(f"Successfully extracted text with pdfplumber from {filename}")
+        except ImportError:
+            logger.warning("pdfplumber not available")
+        except Exception as e:
+            logger.error(f"pdfplumber extraction failed: {str(e)}")
+        
+        # Fallback 2: Try using PyPDF2
+        if not text:
+            try:
+                from PyPDF2 import PdfReader
+                reader = PdfReader(file_path)
+                for page in reader.pages:
+                    text += page.extract_text() or ""
+                logger.info(f"Successfully extracted text with PyPDF2 from {filename}")
+            except ImportError:
+                logger.warning("PyPDF2 not available")
+            except Exception as e:
+                logger.error(f"PyPDF2 extraction failed: {str(e)}")
+    
+    # If all extraction methods failed, provide a placeholder message
+    if not text:
+        text = "PDF text extraction failed. Please provide the content manually in the form below."
+        logger.error(f"All PDF extraction methods failed for {filename}")
+    
+    # Clean up uploaded file
+    fs.delete(filename)
     return text
 
 # Home view to handle upload and prediction - Removed login_required decorator
