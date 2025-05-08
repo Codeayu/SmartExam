@@ -148,9 +148,11 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
                     </a>
-                    <a href="{% url 'dashboard' %}" class="flex items-center bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-3 px-8 rounded-lg border border-gray-300 dark:border-gray-600 transition-all duration-300 shadow-sm hover:shadow transform hover:scale-105 premium-glow">
-                        <span>View Your History</span>
-                        <i class="fas fa-history ml-2"></i>
+                    <a href="{% url 'dashboard' %}" class="btn-premium bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold py-3 px-8 rounded-lg border border-gray-300 dark:border-gray-600 transition-all duration-300 shadow-sm hover:shadow transform hover:scale-105 premium-glow">
+                        <span class="flex items-center">
+                            View Your History
+                            <i class="fas fa-history ml-2"></i>
+                        </span>
                     </a>
                 </div>
                 
@@ -499,7 +501,7 @@
             </div>
             
             <div class="text-center mt-10">
-                <a href="{% url 'pricing' %}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 btn-premium">
+                <a href="{% url 'features' %}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 btn-premium">
                     Explore All Features
                 </a>
             </div>

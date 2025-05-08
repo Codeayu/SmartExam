@@ -81,9 +81,9 @@ MIDDLEWARE = [
 # Session configuration for connection management
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600  # 1 hour in seconds
-SESSION_SAVE_EVERY_REQUEST = True
+SESSION_SAVE_EVERY_REQUEST = False  # Changed to False to reduce database writes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_IDLE_TIMEOUT = 900  # 15 minutes in seconds
+SESSION_IDLE_TIMEOUT = 1800  # Increased to 30 minutes in seconds
 
 ROOT_URLCONF = 'smartexam.urls'
 
@@ -123,14 +123,15 @@ else:
             'HOST': os.getenv("HOST"),
             'PORT': 3306,  # Changed from PORT to DB_PORT to avoid conflict
             'OPTIONS': {
-                'init_command': 'SET session wait_timeout=300',  # 5 minutes timeout
-                'connect_timeout': 20,  # Connection timeout in seconds
+                'init_command': 'SET session wait_timeout=300; SET innodb_lock_wait_timeout=50; SET interactive_timeout=300;',  # Optimized MySQL settings
+                'connect_timeout': 10,  # Reduced connection timeout for faster failure detection
             },
-            'conn_max_age': 60,  # Reduce connection lifetime to 1 minute
+            'conn_max_age': 120,  # Increased to 2 minutes for better connection reuse during auth flows
             'ATOMIC_REQUESTS': False,  # Avoid long-running transactions
             'AUTOCOMMIT': True,  # Ensure connections are returned to the pool quickly
             'POOL_OPTIONS': {
                 'MAX_CONNS': 5,  # Explicitly limit the connection pool size
+                'TIMEOUT': 5,  # Add a 5 second timeout for acquiring connections
             },
         }
     }

@@ -3,6 +3,7 @@ from django.contrib import messages
 import os
 import sys
 import logging
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -260,24 +261,38 @@ def register(request):
         lastnm = request.POST.get('last_name')
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         email = request.POST.get('email')
         dob = request.POST.get('dob')
         college = request.POST.get('college')
         address = request.POST.get('address')
         mob = request.POST.get('mob')
 
-        # check user is already exists
-        if Customuser.objects.filter(username=username).exists():
-            return render(request, 'register.html', {'error': 'Username already exists.'})
-        if Customuser.objects.filter(email=email).exists():
-            return render(request, 'register.html', {'error': 'Email already exists.'})
-        if Customuser.objects.filter(mob=mob).exists():
-            return render(request, 'register.html', {'error': 'Mobile number already exists.'})
-
-        else:
-            # Create a new user
-            user = Customuser.objects.create_user(
+        # Optimize database queries - combine them into a single query with OR conditions
+        from django.db.models import Q
+        existing_user = Customuser.objects.filter(
+            Q(username=username) | Q(email=email) | Q(mob=mob)
+        ).values('username', 'email', 'mob').first()
+        
+        if existing_user:
+            error_message = ''
+            if existing_user.get('username') == username:
+                error_message = 'Username already exists.'
+            elif existing_user.get('email') == email:
+                error_message = 'Email already exists.'
+            elif existing_user.get('mob') == mob:
+                error_message = 'Mobile number already exists.'
+                
+            return render(request, 'register.html', {'error': error_message})
+        
+        # Create a new user in a try-except block to handle potential database issues
+        try:
+            # Close any existing connections before creating the user
+            from django.db import connections
+            for conn in connections.all():
+                conn.close()
+                
+            # Create user without immediately saving - we'll save once to reduce DB operations
+            user = Customuser(
                 first_name=firstnm,
                 last_name=lastnm,
                 username=username,
@@ -288,57 +303,105 @@ def register(request):
                 mob=mob
             )
             user.set_password(password)  # Hash the password
-            # Save the user to the database
+            # Save the user to the database (single operation)
             user.save()
             
-            # Send welcome email
-            try:
-                from django.core.mail import send_mail
-                from django.template.loader import render_to_string
-                from django.utils.html import strip_tags
-                
-                subject = f"Welcome to SmartExam, {firstnm}!"
-                html_message = render_to_string('emails/welcome_email.html', {
-                    'user': user,
-                    'site_name': 'SmartExam',
-                })
-                plain_message = strip_tags(html_message)
-                from_email = settings.DEFAULT_FROM_EMAIL
-                to_email = email
-                
-                send_mail(
-                    subject, 
-                    plain_message, 
-                    from_email, 
-                    [to_email], 
-                    html_message=html_message,
-                    fail_silently=True
-                )
-            except Exception as e:
-                # Log the error but continue with registration
-                print(f"Error sending welcome email: {str(e)}")
+            # Send welcome email in a background thread to not block the response
+            from threading import Thread
             
+            def send_welcome_email_async(user_obj, first_name, to_email):
+                try:
+                    from django.core.mail import send_mail
+                    from django.template.loader import render_to_string
+                    from django.utils.html import strip_tags
+                    
+                    subject = f"Welcome to SmartExam, {first_name}!"
+                    html_message = render_to_string('emails/welcome_email.html', {
+                        'user': user_obj,
+                        'site_name': 'SmartExam',
+                    })
+                    plain_message = strip_tags(html_message)
+                    from_email = settings.DEFAULT_FROM_EMAIL
+                    
+                    send_mail(
+                        subject, 
+                        plain_message, 
+                        from_email, 
+                        [to_email], 
+                        html_message=html_message,
+                        fail_silently=True
+                    )
+                except Exception as e:
+                    logger.error(f"Error sending welcome email: {str(e)}")
+            
+            # Start email sending in background thread
+            email_thread = Thread(
+                target=send_welcome_email_async, 
+                args=(user, firstnm, email)
+            )
+            email_thread.daemon = True  # Set as daemon so it doesn't block application shutdown
+            email_thread.start()
+            
+            # Show success message and redirect to login
             return render(request, 'login.html', {'message': 'User registered successfully! Please check your email for login details.'})
+            
+        except Exception as e:
+            logger.error(f"Registration error: {str(e)}")
+            return render(request, 'register.html', {'error': f'Registration failed. Please try again later.'})
 
     return render(request, 'register.html')
-
 
 def login1(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, f'Welcome back, {username}!')
-            return redirect('home')  # Replace '/' with your actual home URL
-        else:
-            messages.error(request, 'Invalid username or password')
+        
+        # Close any existing connections before authentication to free up resources
+        from django.db import connections
+        for conn in connections.all():
+            conn.close()
+        
+        try:
+            # Use a more direct authentication approach to reduce query count
+            from django.contrib.auth import get_user_model
+            from django.contrib.auth.hashers import check_password
+            
+            User = get_user_model()
+            
+            # Single query to fetch the user
+            try:
+                user = User.objects.get(username=username)
+                password_valid = check_password(password, user.password)
+                
+                if password_valid:
+                    # Login without creating unnecessary DB operations
+                    from django.contrib.auth import login
+                    login(request, user)
+                    
+                    # Update session data directly to avoid additional DB writes
+                    current_time = time.time()
+                    request.session['last_activity'] = current_time
+                    request.session['last_activity_update'] = current_time
+                    
+                    # Don't save session immediately, let it be saved when response completes
+                    # This allows batching session writes
+                    
+                    # Success message
+                    messages.success(request, f'Welcome back, {username}!')
+                    return redirect('home')
+                else:
+                    messages.error(request, 'Invalid username or password')
+                    return redirect('login1')
+            except User.DoesNotExist:
+                messages.error(request, 'Invalid username or password')
+                return redirect('login1')
+                
+        except Exception as e:
+            logger.error(f"Login error: {str(e)}")
+            messages.error(request, 'A system error occurred. Please try again.')
             return redirect('login1')
 
     return render(request, 'login.html')
-
 
 def logout_view(request):
     logout(request)
